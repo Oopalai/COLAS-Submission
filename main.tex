@@ -1,13 +1,5 @@
-% COLAS submission -- anonymized LNCS/MICCAI template.
-% Compile: pdflatex -> bibtex -> pdflatex -> pdflatex  (splncs04, numbered [n]).
-% Page budget: 8 pages main content + up to 2 pages references (10 total).
-% Anonymized for double-blind review: author/affiliation/email masked; self-references in third person.
-%
-% SCOPE (Jul 2026): scaled down from the AECAI draft to fit COLAS. The stimulus is now a SURFACE
-% MESH of the prominent cerebral vasculature (full direct volume rendering was too heavy to sustain
-% untethered over passthrough on Quest 3), rendered OPAQUE, and the shader set is THREE conditions:
-% Phong (reference), fog (aerial perspective), and pseudo-chromadepth.
-%
+%MAKE ABSOLUTELY CERTAIN YOU ANONYMIZE DUMMY DESK REJECTIONS ARE FAIL
+
 \documentclass[runningheads]{llncs}
 %
 \usepackage[T1]{fontenc}
@@ -19,7 +11,7 @@
 %
 \begin{document}
 %
-\title{Evaluating Depth-Enhancement Shaders for Cerebral Vasculature in Passthrough Mixed Reality: A Standalone Mesh-Rendering System and Pre-Registered Protocol on Meta Quest~3}
+\title{Evaluating Depth-Enhancement Shaders for Cerebral Vasculature in Passthrough Mixed Reality on Meta Quest~3}
 %
 \titlerunning{Depth-Enhancement Shaders for Vasculature in Passthrough MR}
 %
@@ -31,22 +23,7 @@
 \maketitle
 %
 \begin{abstract}
-Accurately judging the depth of cerebral vessels is central to neurosurgical planning and image-guided
-navigation. We study the visualisation of cerebral angiography in video see-through (passthrough) Mixed
-Reality (MR) on a standalone Meta Quest~3. Full direct volume rendering of a brain volume proved too costly
-to sustain untethered while compositing over passthrough, so we render a segmented surface \emph{mesh} of
-the prominent vasculature, which runs comfortably on-device and yields a cleaner, more interpretable
-stimulus. The open question we target is whether depth-enhancement shaders improve depth judgement when
-virtual anatomy is viewed against a real background --- a regime between 2D displays, where such shaders
-clearly help, and immersive VR, where strong stereo and parallax make them wash out. We present a
-standalone MR system that registers the vessel mesh to the real workspace and a rigorously controlled,
-pre-registered protocol comparing three shaders --- Phong (reference), aerial-perspective fog, and
-pseudo-chromadepth --- on an absolute in-scene target-placement task. The design holds the base surface
-material and real-world occlusion constant across conditions, derives ground truth from the vessel
-centreline, and decomposes placement error into view-axis (depth) and lateral components. We report
-on-device rendering feasibility and discuss how the protocol is powered against the depth challenges
-specific to passthrough MR. \textbf{[TODO: add one-sentence headline result once the feasibility pilot is
-run.]}
+Accurately judging the depth of cerebral vessels is central to neurosurgical planning and image-guided navigation. One promising technology to assist in depth and placement determination is video-passthrough augmented reality headsets. This study seeks to determine whether depth-enhancement shaders improve depth perception when virtual anatomy is viewed against a real background. This is in contrast to 2D displays, where such shaders are high effective in portraying depth, and immersive VR, where strong stereo and parallax make shaders less valuable. We present a standalone MR application that anchors the vessel mesh to the real world coordinate and evalutates how participants' depth perception changes. This is accomplished by comparing three shaders that have been previously shown to contribute highly to depth perception: Phong (reference), aerial-perspective fog, and pseudo-chromadepth. These shaders are used in a fiducial placement task that evaluates how accurately the participant is judging the depth by having them first identify the middle depth point out of three possibilities, and then asking them to place a fiducial marker as close to the surface as possible. \textbf{[TODO: SERIOUSLY ADD 1 sentence headline result once the feasibility pilot is run.]}
 
 \keywords{Mixed reality \and Passthrough video see-through \and Depth perception \and Cerebral angiography
 \and Surface rendering \and Neurosurgical planning.}
@@ -56,127 +33,49 @@ run.]}
 %
 \section{Introduction}\label{sec:intro}
 
-Neurovascular interventions --- including the planning and clipping of aneurysms, the resection of
-arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs) --- depend on a
-precise, three-dimensional understanding of how target vessels are situated within the surrounding
-brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the \emph{depth} of a vessel
-of interest: it is typically embedded within, and partially occluded by, other anatomy, so its position
-relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat desktop
-renderings used in conventional review, which provide weak and often ambiguous depth
-information~\cite{kersten-oertel_augmented_2015-1}. \textbf{[TODO: one sentence on the clinical consequence
-of misjudging vessel depth, tied to collaborators' use case if possible.]}
+Neurovascular interventions, including the planning and clipping of aneurysms, the resection of arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs), depend on a precise, three-dimensional understanding of how target vessels are situated within the surrounding brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the depth of a vessel of interest: it is typically embedded within, and partially occluded by, other anatomy, so its position relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat desktop renderings used in conventional review, which provide weak and often ambiguous depth information~\cite{kersten-oertel_augmented_2015-1}. TODO: Add more here if space allows]. Video see-through (passthrough) Mixed Reality (MR) is an appealing medium for this task: a head-mounted stereoscopic display supplies binocular disparity and head-coupled motion parallax, two strong depth cues, while registering the vasculature to the clinician's real workspace keeps the physical environment as context. Realising this on a standalone headset, however, constrains the rendering.
 
-Video see-through (passthrough) Mixed Reality (MR) is an appealing medium for this task: a head-mounted
-stereoscopic display supplies binocular disparity and head-coupled motion parallax --- two of the strongest
-depth cues --- while registering the vasculature to the clinician's real workspace keeps the physical
-environment as context. Realising this on a \emph{standalone} headset, however, constrains the rendering.
-Raymarched direct volume rendering (DVR) of a brain volume is bandwidth- and fragment-shader-bound, and
-interactive medical DVR has been sustained only on PC-tethered or externally accelerated
-systems~\cite{faludi_multivolume_2025}; in our own testing it could not hold interactive framerates
-untethered while also compositing over the passthrough feed. We therefore render a segmented surface
-\emph{mesh} of the prominent cerebral vasculature. The mesh runs comfortably within the standalone frame
-budget, and --- because it dispenses with the transfer function whose opacity ramp otherwise entangles
-occlusion and aerial perspective with the manipulation of interest --- yields a cleaner, more interpretable
-stimulus for a depth-perception study.
+Raymarched direct volume rendering (DVR) of a brain volume is fragment-shader-bound challenge for the current generation of HMDs. Interactive medical DVR has been sustained only on PC-tethered or externally accelerated systems~\cite{faludi_multivolume_2025}, and in our own internal testing it could not hold interactive framerates untethered while also compositing over the passthrough feed, resulting in a virtual experience incongruent with the video passthrough feed or physical location of the participant. We therefore render a segmented surface mesh of the prominent cerebral vasculature. The mesh runs at a comfortable and sustainable framerate, and because it dispenses with the transfer function whose opacity ramp otherwise entangles occlusion and aerial perspective with the manipulation of interest yields a cleaner, more interpretable stimulus for a depth-perception study.
 
-The open question is whether \emph{depth-enhancement shaders} improve vessel depth judgement in this
-setting. On 2D displays, cues such as aerial perspective (fog) and pseudo-chromadepth substantially improve
-depth judgements of vascular data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In
-immersive VR, by contrast, binocular stereo and motion parallax are so strong that shader differences
-largely wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR sits between these
-regimes and adds its own difficulties: the virtual mesh competes with a real, textured background, and the
-passthrough imagery is geometrically distorted, reduced in resolution, and latent --- the depth and
-occlusion problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. Whether
-depth-enhancement shaders help angiographic depth judgement here is therefore open, and clinically
-consequential.
+The open question is whether depth-enhancement shaders actually improve vessel depth judgement in this setting. On 2D displays, cues such as aerial perspective (fog) and pseudo-chromadepth substantially improve depth judgements of vascular data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In immersive VR, by contrast, binocular stereo and motion parallax are so strong that shader differences largely wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR sits between these regimes and adds its own difficulties: the virtual mesh competes with a real, textured background, and the passthrough imagery is geometrically distorted, reduced in resolution, and latent --- the depth and occlusion problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. Whether depth-enhancement shaders help depth judgement here is therefore an open question we seek to help answer.
 
-\noindent This paper makes three contributions:
+\noindent This study makes three contributions:
 \begin{itemize}
-  \item A \emph{standalone} (untethered) passthrough-MR system that registers a cerebral-vasculature mesh
-        to the real workspace on the Meta Quest~3 and renders it, with real-world occlusion, within the
-        standalone frame budget (Section~\ref{sec:system}).
-  \item A rigorously controlled, pre-registered \emph{protocol} comparing three depth-enhancement shaders
-        --- Phong, fog, and pseudo-chromadepth --- on an absolute in-scene target-placement task, with
-        explicit confound controls and an error decomposition isolating the diagnostic depth axis
-        (Section~\ref{sec:design}).
-  \item An on-device \emph{feasibility} check confirming that mesh rendering sustains headset framerate
-        over the passthrough pipeline (Section~\ref{sec:results}).
-\end{itemize}
+  \item A standalone passthrough-MR system that registers a cerebral-vasculature mesh to the physical anchorpoint on the Meta Quest~3 and renders it within the standalone frame budget (Section~\ref{sec:system}).
+  \item A depth-placement task comparison of three depth-enhancement shaders: Phong, fog, and pseudo-chromadepth. Objective measurements collected from the placement task include accuracy, time to place, and the amount of user hand and head movements made while determining the depth.
+  \item A study participant post-task survey to evaluate subjective measures including mental, physical, and temporal stress experiences as well as perceived effectiveness with each shader. \end{itemize}
 
 \section{Related Work}\label{sec:related}
 
 \subsubsection{Depth cues for vascular visualisation.}
-For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline; on a
-surface mesh its normals are well defined, so it is a fair reference rather than a source of gradient
-noise. Added depth cues improve on it. Aerial perspective (fog) encodes distance as
-desaturation/attenuation, and pseudo-chromadepth --- a depth-to-colour ($\text{red}\rightarrow\text{blue}$)
-mapping introduced for angiography~\cite{ropinski_visually_2006} --- is consistently rated among the
-strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014}; it has been adapted
-specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}, the setting we adopt. These
-results motivate our three-condition set: Phong (reference), fog, and pseudo-chromadepth. Depth-cue
+For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline. Added depth cues improve on it. Aerial perspective (fog) encodes distance as desaturation/attenuation of opacity over distance, and pseudo-chromadepth is a depth-to-colour ($\text{red}\rightarrow\text{blue}$)
+mapping introduced for angiography~\cite{ropinski_visually_2006}. These methods consistently rated among the
+strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014} and it has been adapted
+specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}. Depth-cue
 comparisons are well developed for surface renderings on conventional and VR
 displays~\cite{hombeck_evaluating_2022}, but have not been transferred to registered, passthrough-MR
 viewing of cerebral vasculature.
 
 \subsubsection{Depth perception in immersive VR and the ceiling effect.}
-Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and
-motion parallax are themselves powerful cues, and several studies report that shader choice then matters
-little: depth judgements of vascular models were more precise in VR than on desktop yet barely
-distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on
-relative-depth perception for angiographic volumes in VR~\cite{titov_effect_2021}, and, once camera motion
-is permitted, depth perception depends more on scene content than on the chosen
-technique~\cite{lesar_evaluation_2024}. This ceiling effect motivates our move to passthrough MR and
-requires that difficulty be raised deliberately. Methodologically, 3D-pointing studies show that error
-along the view (depth) axis behaves differently from lateral error and is the axis on which depth cues
-act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition rather than a single
-3D distance.
+Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and motion parallax are themselves powerful cues, and several studies report that shader choice then matters little: depth judgements of vascular models were more precise in VR than on desktop yet barely distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on relative-depth perception for angiographic volumes in VR~\cite{titov_effect_2021}, and, once camera motion is permitted, depth perception depends more on scene content than on the chosen technique~\cite{lesar_evaluation_2024}. This ceiling effect motivates our move to passthrough MR and requires that difficulty be raised deliberately. Methodologically, 3D-pointing studies show that error along the view (depth) axis behaves differently from lateral error and is the axis on which depth cues
+act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition rather than a single 3D distance.
 
 \subsubsection{Depth perception in passthrough augmented and mixed reality.}
-Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content overlaid
-on a real scene is systematically misperceived, modulated by display type, shadows, and relative
-position~\cite{adams_depth_2022} and by object shape, colour, and luminance~\cite{do_effects_2020}; without
-correct occlusion, virtual structures appear to float in front of real ones, a long-standing, only
-partially solved problem~\cite{macedo_occlusion_2023,shah_occlusion_2012}. These effects are acute for
-medical overlays, and depth-enhancing vascular visualisation has been pursued specifically for
-neurovascular AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}. The closest prior work
-compares depth cues for vasculature but on desktop or tethered VR and with relative-depth or detection
-tasks~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}; we extend that comparison to
-\emph{standalone passthrough MR} and to an \emph{absolute} in-scene target-placement task whose error is
-decomposed into depth and lateral components, with the mesh registered to the real workspace and real-world
-occlusion enabled but held constant across conditions.
+Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content overlaid on a real scene is systematically misperceived, modulated by display type, shadows, and relative position~\cite{adams_depth_2022} and by object shape, colour, and luminance~\cite{do_effects_2020}; without correct occlusion, virtual structures appear to float in front of real ones, a long-standing, only partially solved problem~\cite{macedo_occlusion_2023,shah_occlusion_2012}. These effects are acute for medical overlays, and depth-enhancing vascular visualisation has been pursued specifically for neurovascular AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}. The closest prior work compares depth cues for vasculature but on desktop or tethered VR and with relative-depth or detection tasks~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}; we extend that comparison to \emph{standalone passthrough MR} and to an \emph{absolute} in-scene target-placement task whose error is decomposed into depth and lateral components, with the mesh registered to the real workspace and real-world occlusion enabled but held constant across conditions.
 
 \section{System}\label{sec:system}
 
 \subsection{Vessel Mesh and Base Material}\label{sec:system-mesh}
-The stimulus is a segmented triangle \emph{mesh} of the prominent cerebral vasculature, rendered as an
-opaque surface; the same mesh, skeletonised to its \emph{centreline}, provides the ground truth used in the
-task (Section~\ref{sec:design-task}). Choosing a mesh over full DVR is what makes the system run untethered
-(Section~\ref{sec:system-perf}) and removes the transfer function as a confound: with no opacity ramp,
-occlusion is simply correct surface occlusion and is held constant across conditions. A single base
-material --- surface colour and Phong lighting response --- is shared by all conditions, so each condition
-adds only its distance encoding on top of an identical baseline. \textbf{[TODO: dataset --- modality,
-source, and number of cases --- to be supplied; state mesh extraction (segmentation + surface
-reconstruction) once fixed.]}
+The stimulus is a segmented triangle mesh of the prominent cerebral vasculature, rendered as an opaque surface. The reference points are placed on the surface at varying depths and provide the ground truth used in the task (Section~\ref{sec:design-task}). Choosing a mesh over full DVR is what makes the system run untethered(Section~\ref{sec:system-perf}) and removes the transfer function as a confound. Without an opacity ramp, occlusion is simply correct surface occlusion and is held constant across conditions. A single base material is shared by all conditions, so each condition adds only its distance encoding on top of an identical baseline. \textbf{[TODO: Dataset details here!]}
 
 \subsection{Depth-Enhancement Shaders}\label{sec:system-shaders}
-The three conditions share the base material and differ only in the added depth cue: \emph{Phong}, standard
-local surface shading, which serves as the reference; \emph{fog}, an explicit parameterised
-depth$\rightarrow$desaturation applied post-shading and disabled in the other conditions; and
-\emph{pseudo-chromadepth}, a depth-dependent red$\rightarrow$blue colour
-mapping~\cite{ropinski_visually_2006,behrendt_combining_2017}.
+The three conditions share the base material and differ only in the added depth cue: \emph{Phong}, standard local surface shading, which serves as the reference; \emph{fog}, an explicit parameterised depth$\rightarrow$desaturation applied post-shading and disabled in the other conditions; and \emph{pseudo-chromadepth}, a depth-dependent red$\rightarrow$blue colour mapping~\cite{ropinski_visually_2006,behrendt_combining_2017}.
 
 \subsection{Passthrough Compositing and Registration}\label{sec:system-passthrough}
-The system is built in Unreal Engine 5.7.3. The mesh is drawn over the Quest~3 passthrough feed using
-Meta's Passthrough API and world-locked to the workspace with a Meta Spatial Anchor on the participant's
-table, so it stays fixed as the participant moves. Real-world occlusion is resolved with the Quest~3 Depth
-API, so the participant's hands and nearby objects correctly occlude the mesh; this occlusion is enabled
-and held constant across all conditions (Section~\ref{sec:design-conditions}).
+The system is built in Unreal Engine 5.7.3. The mesh is drawn over the Quest~3 passthrough feed using Meta's Passthrough API and world-locked to the workspace with a Meta Spatial Anchor on the participant's table, so it stays fixed as the participant moves. Real-world occlusion is resolved with the Quest~3 Depth API Soft Occlusion setting, so the participant's hands and nearby objects correctly occlude the mesh. Occlusion is enabled and held constant across all conditions (Section~\ref{sec:design-conditions}).
 
 \subsection{Standalone Rendering on Quest~3}\label{sec:system-perf}
-Unlike raymarched DVR, an opaque surface mesh is inexpensive to rasterise, so the system comfortably
-sustains the headset display rate alongside the passthrough and depth pipelines rather than the reduced
-target a standalone volume raymarch would impose. Measured performance is reported in
-Section~\ref{sec:results}.
+Unlike raymarched DVR, an opaque surface mesh is inexpensive to rasterise, so the system comfortably sustains the headset display rate alongside the passthrough and depth pipelines rather than the reduced target a standalone volume raymarch would impose. Measured performance is reported in Section~\ref{sec:results}.
 
 \begin{figure}[t]
 \centering
@@ -196,48 +95,16 @@ placeholder.]}}\label{fig:shaders}
 \section{Study Design and Protocol}\label{sec:design}
 
 \subsection{Task and Ground Truth}\label{sec:design-task}
-The mesh is world-locked to the workspace with a Meta Spatial Anchor and viewed through the passthrough
-cameras, appearing as a solid object on the participant's table. On each trial the participant views the
-vasculature under one shader condition and indicates the perceived 3D location of a designated target
-vessel by positioning a virtual marker with a hand controller. Ground truth is the vessel \emph{centreline}
-node nearest the intended landmark, obtained by skeletonising the segmented mesh; this gives an unambiguous
-anatomical point even though the rendered vessel has a finite radius. \textbf{[TODO: confirm input modality
-(controller ray vs.\ direct grab) and marker form (point vs.\ small sphere).]}
+The mesh is world-locked to the workspace with a spatial anchor and viewed through the passthrough cameras, appearing as a solid object on the participant's table. On each trial the participant views the vasculature under one shader condition and indicates the perceived 3D location of a designated target vessel by positioning a virtual marker with a hand controller. Ground truth is provided by the preset references mark placed on the segmented mesh, providing an unambiguous point on the mesh curvature.
 
 \subsection{Conditions and Confound Controls}\label{sec:design-conditions}
-The single manipulated factor is the depth-enhancement shader, applied within subjects: Phong, fog, and
-pseudo-chromadepth (Section~\ref{sec:system-shaders}). The overriding control is that a \emph{single base
-material} --- surface colour and Phong response --- and correct opaque occlusion are held constant across
-all conditions, so each shader changes only how distance is encoded, not the underlying surface or its
-occlusion~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}. Fog is an explicit, parameterised
-depth-to-desaturation function \emph{disabled} in the non-fog conditions, so the fog condition isolates an
-added distance encoding; in passthrough it blends toward a fixed reference colour rather than the variable
-real background, so it is not confounded with scene content. Stereo separation, motion parallax, the
-passthrough path, and real-world occlusion are held identical across conditions; manipulating occlusion
-handling is left to future work (Section~\ref{sec:discussion}).
+The single manipulated factor is the depth-enhancement shader, applied within subjects: Phong, fog, and pseudo-chromadepth (Section~\ref{sec:system-shaders}). The overriding control is that a \emph{single base material} --- surface colour and Phong response --- and correct opaque occlusion are held constant across all conditions, so each shader changes only how distance is encoded, not the underlying surface or its occlusion~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}. Fog is an explicit, parameterised depth-to-desaturation function \emph{disabled} in the non-fog conditions, so the fog condition isolates an added distance encoding; in passthrough it blends toward a fixed reference colour rather than the variable real background, so it is not confounded with scene content. Stereo separation, motion parallax, the passthrough path, and real-world occlusion are held identical across conditions; manipulating occlusion handling is left to future work (Section~\ref{sec:discussion}).
 
 \subsection{Procedure and Difficulty Calibration}\label{sec:design-procedure}
-After a short training block, each participant completes the three conditions in a counterbalanced order
-(e.g.\ a Latin square), with several targets per condition spanning a range of depths.
-\textbf{[TODO: fix trial counts and timings after piloting.]} Two considerations shape the procedure.
-First, because stereo and parallax can still produce a strong ceiling
-effect~\cite{heinrich_estimating_2021,titov_effect_2021}, difficulty is raised deliberately: targets sit
-deep in the vasculature, behind other vessels so occlusion ordering is ambiguous (self-occlusion), and in
-visually crowded regions known to degrade depth perception~\cite{lesar_evaluation_2024}. Second, because
-free head movement recovers depth from parallax, viewing is constrained (e.g.\ a brief static-viewing
-window or system-driven rotation rather than unrestricted head movement) and a response deadline
-discourages extended viewpoint change. Head pose is logged throughout as a covariate. The exact depths,
-crowding, viewing-window duration, and deadline are fixed in a pilot that places performance off both floor
-and ceiling before the main run.
+After a short training block, each participant completes the three conditions in a counterbalanced order (e.g.\ a Latin square), with several targets per condition spanning a range of depths. \textbf{[TODO: fix trial counts and timings after piloting.]} Two considerations shape the procedure.
+First, because stereo and parallax can still produce a strong ceiling effect~\cite{heinrich_estimating_2021,titov_effect_2021}, difficulty is raised deliberately: targets sit deep in the vasculature, behind other vessels so occlusion ordering is ambiguous (self-occlusion), and in visually crowded regions known to degrade depth perception~\cite{lesar_evaluation_2024}. Second, because free head movement recovers depth from parallax, viewing is constrained (e.g.\ a brief static-viewing window or system-driven rotation rather than unrestricted head movement) and a response deadline discourages extended viewpoint change. Head pose is logged throughout as a covariate. The exact depths, crowding, viewing-window duration, and deadline are fixed in a pilot that places performance off both floor and ceiling before the main run.
 
-\subsection{Error Metrics and Outcomes}\label{sec:design-metrics}
-For each placement, the 3D error vector between the marker and the ground-truth centreline node is
-decomposed --- using the headset pose at placement --- into a component along the view (camera) axis, the
-\emph{depth} error, and an orthogonal \emph{lateral} component. This separation is standard in 3D pointing
-because depth is the axis on which the cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, and only
-the depth component is diagnostic of a shader's effect. The \emph{signed} depth error is also recorded, to
-detect the systematic depth compression characteristic of head-mounted displays. The pre-registered primary
-outcome is the (unsigned) depth error; lateral error, signed depth error, and completion time are secondary.
+\subsection{Error Metrics and Outcomes}\label{sec:design-metrics} For each placement, the 3D error vector between the marker and the ground-truth centreline node is decomposed --- using the headset pose at placement --- into a component along the view (camera) axis, the \emph{depth} error, and an orthogonal \emph{lateral} component. This separation is standard in 3D pointing because depth is the axis on which the cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, and only the depth component is diagnostic of a shader's effect. The \emph{signed} depth error is also recorded, to detect the systematic depth compression characteristic of head-mounted displays. The pre-registered primary outcome is the (unsigned) depth error; lateral error, signed depth error, and completion time are secondary.
 
 \subsection{Participants, Power, and Analysis}\label{sec:design-analysis}
 The perceptual sample will be drawn from a non-clinical population (e.g.\ computer-science and engineering
