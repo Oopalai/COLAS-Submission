@@ -1,143 +1,191 @@
-%MAKE ABSOLUTELY CERTAIN YOU ANONYMIZE DUMMY DESK REJECTIONS ARE FAIL
+% This is a modified version of Springer's LNCS template suitable for anonymized MICCAI 2025 main conference submissions. 
+% Original file: samplepaper.tex, a sample chapter demonstrating the LLNCS macro package for Springer Computer Science proceedings; Version 2.21 of 2022/01/12
 
 \documentclass[runningheads]{llncs}
 %
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{comment}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encodings may result in incorrect characters.
+%
+\usepackage{graphicx,verbatim}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+%\urlstyle{rm}
 %
 \begin{document}
 %
-\title{Evaluating Depth-Enhancement Shaders for Cerebral Vasculature in Passthrough Mixed Reality on Meta Quest~3}
+\title{Contributing Title}
 %
-\titlerunning{Depth-Enhancement Shaders for Vasculature in Passthrough MR}
+\begin{comment}  %% Removed for anonymized MICCAI 2025 submission
+\author{First Author\inst{1}\orcidID{0000-1111-2222-3333} \and
+Second Author\inst{2,3}\orcidID{1111-2222-3333-4444} \and
+Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 %
-\author{Anonymized Authors}  %% Anonymized for double-blind COLAS submission
+\end{comment}
+
+\author{Anon Authors}  %% Added for anonymized MICCAI 2025 submission
 \authorrunning{Anonymized Author et al.}
 \institute{Anonymized Affiliations \\
     \email{email@anonymized.com}}
-%
-\maketitle
+
+    
+\maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-Accurately judging the depth of cerebral vessels is central to neurosurgical planning and image-guided navigation. One promising technology to assist in depth and placement determination is video-passthrough augmented reality headsets. This study seeks to determine whether depth-enhancement shaders improve depth perception when virtual anatomy is viewed against a real background. This is in contrast to 2D displays, where such shaders are high effective in portraying depth, and immersive VR, where strong stereo and parallax make shaders less valuable. We present a standalone MR application that anchors the vessel mesh to the real world coordinate and evalutates how participants' depth perception changes. This is accomplished by comparing three shaders that have been previously shown to contribute highly to depth perception: Phong (reference), aerial-perspective fog, and pseudo-chromadepth. These shaders are used in a fiducial placement task that evaluates how accurately the participant is judging the depth by having them first identify the middle depth point out of three possibilities, and then asking them to place a fiducial marker as close to the surface as possible. \textbf{[TODO: SERIOUSLY ADD 1 sentence headline result once the feasibility pilot is run.]}
+The abstract should briefly summarize the contents of the paper in 150--250 words.  If you are to include a link to your Repository, please make sure it is anonymized for the double-blind review phase.
 
-\keywords{Mixed reality \and Passthrough video see-through \and Depth perception \and Cerebral angiography
-\and Surface rendering \and Neurosurgical planning.}
+\keywords{First keyword  \and Second keyword \and Another keyword.}
+% Authors must provide keywords and are not allowed to remove this Keyword section.
+
 \end{abstract}
+%
+%
+%
+\section{Important Messages to MICCAI Authors}
 
-\section{Introduction}\label{sec:intro}
-Neurovascular interventions, including the planning and clipping of aneurysms, the resection of arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs), depend on a precise, three-dimensional understanding of how target vessels are situated within the surrounding brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the depth of a vessel of interest: it is typically embedded within, and partially occluded by, other anatomy, so its position relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat desktop renderings used in conventional review, which provide weak and often ambiguous depth information~\cite{kersten-oertel_augmented_2015-1}. TODO: Add more here if space allows]. Video see-through (passthrough) Mixed Reality (MR) is an appealing medium for this task: a head-mounted stereoscopic display supplies binocular disparity and head-coupled motion parallax, two strong depth cues, while registering the vasculature to the clinician's real workspace keeps the physical environment as context. Realising this on a standalone headset, however, constrains the rendering.
+This is a modified version of Springer's LNCS template suitable for anonymized MICCAI 2025 main conference submissions. The author section has already been anonymized for you.  You cannot remove the author section to gain extra writing space.  You must not remove the abstract and the keyword sections in your submission.
 
-Raymarched direct volume rendering (DVR) of a brain volume is fragment-shader-bound challenge for the current generation of HMDs. Interactive medical DVR has been sustained only on PC-tethered or externally accelerated systems~\cite{faludi_multivolume_2025}, and in our own internal testing it could not hold interactive framerates untethered while also compositing over the passthrough feed, resulting in a virtual experience incongruent with the video passthrough feed or physical location of the participant. We therefore render a segmented surface mesh of the prominent cerebral vasculature. The mesh runs at a comfortable and sustainable framerate, and because it dispenses with the transfer function whose opacity ramp otherwise entangles occlusion and aerial perspective with the manipulation of interest yields a cleaner, more interpretable stimulus for a depth-perception study.
+To avoid an accidental anonymity breach, you are not required to include the acknowledgments and the Disclosure of Interest sections for the initial submission phase.  If your paper is accepted, you must reinsert these sections to your final paper. 
 
-The open question is whether depth-enhancement shaders actually improve vessel depth judgement in this setting. On 2D displays, cues such as aerial perspective (fog) and pseudo-chromadepth substantially improve depth judgements of vascular data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In immersive VR, by contrast, binocular stereo and motion parallax are so strong that shader differences largely wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR sits between these regimes and adds its own difficulties: the virtual mesh competes with a real, textured background, and the passthrough imagery is geometrically distorted, reduced in resolution, and latent - the depth and occlusion problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. Whether depth-enhancement shaders help depth judgement here is therefore an open question we seek to help answer.
+To avoid desk rejection of your paper, you are encouraged to read "Avoiding Desk Rejection" by the MICCAI submission platform manager.  A few important rules are summarized below for your reference:  
+\begin{enumerate}
+    \item Do not modify or remove the provided anonymized author section.
+    \item Do not remove the abstract and keyword sections to gain extra writing space. Authors must provide at least one keyword.
+    \item Inline figures (wrapping text around a figure) are not allowed.
+    \item Authors are not allowed to change the default margins, font size, font type, and document style.  If you are using any additional packages, it is the author's responsibility that any additional packages do not inherently change the document's layout.
+    \item It is prohibited to use commands such as \verb|\vspace| and \verb|\hspace| to reduce the pre-set white space in the document.
+    \item Please make sure your figures and tables do not span into the margins.
+    \item If you have tables, the smallest font size allowed is 8pt.
+    \item Please ensure your paper is properly anonymized.  Refer to your previously published paper in the third person.  Data collection location and private dataset should be masked.
+    \item Your paper must not exceed the page limit.  You can have 8 pages of the main content (text (including paper title, author section, abstract, keyword section), figures and tables, and conclusion) plus up to 2 pages of references.  The reference section does not need to start on a new page.  If you include the acknowledgments and the Disclosure of Interest sections, these two sections are considered part of the main content.
+    \item If you submit supplementary material, please note that reviewers are encouraged but not required to read it.  The main paper should be self-contained.  *NEW* Supplementary materials are limited to multimedia content (e.g., videos) as warranted by the technical application (e.g. robotics, surgery, ….). These files should not display any proofs, analysis, or additional results, and should not show any identification markers either. Violation of this guideline will lead to desk rejection. PDF files may NOT be submitted as supplementary materials in 2025 unless authors are citing a paper that has not yet been published.  In such a case, authors are required to submit an anonymized version of the cited paper.
+\end{enumerate}
 
-\noindent This study makes three contributions:
-\begin{itemize}
-  \item A standalone passthrough-MR system that registers a cerebral-vasculature mesh to the physical anchorpoint on the Meta Quest~3 and renders it within the standalone frame budget (Section~\ref{sec:system}).
-  \item A depth-placement task comparison of three depth-enhancement shaders: Phong, fog, and pseudo-chromadepth. Objective measurements collected from the placement task include accuracy, time to place, and the amount of user hand and head movements made while determining the depth.
-  \item A study participant post-task survey to evaluate subjective measures including mental, physical, and temporal stress experiences as well as perceived effectiveness with each shader. \end{itemize}
 
-\section{Related Work}\label{sec:related}
+\section{Section}
+\subsection{A Subsection Sample}
+Please note that the first paragraph of a section or subsection is
+not indented. The first paragraph that follows a table, figure,
+equation etc. does not need an indent, either.
 
-\subsubsection{Depth cues for vascular visualisation.}
-For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline. Added depth cues improve on it. Aerial perspective (fog) encodes distance as desaturation/attenuation of opacity over distance, and pseudo-chromadepth is a depth-to-colour ($\text{red}\rightarrow\text{blue}$)
-mapping introduced for angiography~\cite{ropinski_visually_2006}. These methods consistently rated among the
-strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014} and it has been adapted
-specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}. Depth-cue
-comparisons are well developed for surface renderings on conventional and VR
-displays~\cite{hombeck_evaluating_2022}, but have not been transferred to registered, passthrough-MR
-viewing of cerebral vasculature.
+Subsequent paragraphs, however, are indented.
 
-\subsubsection{Depth perception in immersive VR and the ceiling effect.}
-Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and motion parallax are themselves powerful cues, and several studies report that shader choice then matters little: depth judgements of vascular models were more precise in VR than on desktop yet barely distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on relative-depth perception for angiographic volumes in VR~\cite{titov_effect_2021}, and, once camera motion is permitted, depth perception depends more on scene content than on the chosen technique~\cite{lesar_evaluation_2024}. This ceiling effect motivates our move to passthrough MR and requires that difficulty be raised deliberately. Methodologically, 3D-pointing studies show that error along the view (depth) axis behaves differently from lateral error and is the axis on which depth cues
-act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition rather than a single 3D distance.
+\subsubsection{Sample Heading (Third Level)} Only two levels of
+headings should be numbered. Lower level headings remain unnumbered;
+they are formatted as run-in headings.
 
-\subsubsection{Depth perception in passthrough augmented and mixed reality.}
-Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content overlaid on a real scene is systematically misperceived, modulated by display type, shadows, and relative position~\cite{adams_depth_2022} and by object shape, colour, and luminance~\cite{do_effects_2020}; without correct occlusion, virtual structures appear to float in front of real ones, a long-standing, only partially solved problem~\cite{macedo_occlusion_2023,shah_occlusion_2012}. These effects are acute for medical overlays, and depth-enhancing vascular visualisation has been pursued specifically for neurovascular AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}. The closest prior work compares depth cues for vasculature but on desktop or tethered VR and with relative-depth or detection tasks~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}; we extend that comparison to \emph{standalone passthrough MR} and to an \emph{absolute} in-scene target-placement task whose error is decomposed into depth and lateral components, with the mesh registered to the real workspace and real-world occlusion enabled but held constant across conditions.
+\paragraph{Sample Heading (Fourth Level)}
+The contribution should contain no more than four levels of
+headings. Table~\ref{tab1} gives a summary of all heading levels.
 
-\section{System}\label{sec:system}
+\begin{table}
+\caption{Table captions should be placed above the
+tables.}\label{tab1}
+\begin{tabular}{|l|l|l|}
+\hline
+Heading level &  Example & Font size and style\\
+\hline
+Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
+1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
+2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
+3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
+4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
+\hline
+\end{tabular}
+\end{table}
 
-\subsection{Vessel Mesh and Base Material}\label{sec:system-mesh}
-The stimulus is a segmented triangle mesh of the prominent cerebral vasculature, rendered as an opaque surface. The reference points are placed on the surface at varying depths and provide the ground truth used in the task (Section~\ref{sec:design-task}). Choosing a mesh over full DVR is what makes the system run untethered(Section~\ref{sec:system-perf}) and removes the transfer function as a confound. Without an opacity ramp, occlusion is simply correct surface occlusion and is held constant across conditions. A single base material is shared by all conditions, so each condition adds only its distance encoding on top of an identical baseline. \textbf{[TODO: Dataset details here!]}
 
-\subsection{Depth-Enhancement Shaders}\label{sec:system-shaders}
-The three conditions share the base material and differ only in the added depth cue: \emph{Phong}, standard local surface shading, which serves as the reference; \emph{fog}, an explicit parameterised depth$\rightarrow$desaturation applied post-shading and disabled in the other conditions; and \emph{pseudo-chromadepth}, a depth-dependent red$\rightarrow$blue colour mapping~\cite{ropinski_visually_2006,behrendt_combining_2017}.
+\noindent Displayed equations are centered and set on a separate
+line.
+\begin{equation}
+x + y = z
+\end{equation}
+Please try to avoid rasterized images for line-art diagrams and
+schemas. Whenever possible, use vector graphics instead (see
+Fig.~\ref{fig1}).
 
-\subsection{Passthrough Compositing and Registration}\label{sec:system-passthrough}
-The system is built in Unreal Engine 5.7.3. The mesh is drawn over the Quest~3 passthrough feed using Meta's Passthrough API and world-locked to the workspace with a Meta Spatial Anchor on the participant's table, so it stays fixed as the participant moves. Real-world occlusion is resolved with the Quest~3 Depth API Soft Occlusion setting, so the participant's hands and nearby objects correctly occlude the mesh. Occlusion is enabled and held constant across all conditions (Section~\ref{sec:design-conditions}).
-
-\subsection{Standalone Rendering on Quest~3}\label{sec:system-perf}
-Unlike raymarched DVR, an opaque surface mesh is inexpensive to rasterise, so the system comfortably sustains the headset display rate alongside the passthrough and depth pipelines rather than the reduced target a standalone volume raymarch would impose. Measured performance is reported in Section~\ref{sec:results}.
-
-\begin{figure}[t]
-\centering
-\includegraphics[height=3.2cm]{fig1.eps}
-\caption{The standalone cerebral-vasculature mesh composited over Quest~3 passthrough and world-locked with
-a Meta Spatial Anchor (in-headset capture). \textbf{[TODO: replace placeholder.]}}\label{fig:system}
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1.eps}
+\caption{A figure caption is always placed below the illustration.
+Please note that short captions are centered, while long ones are
+justified by the macro package automatically.} \label{fig1}
 \end{figure}
 
-\begin{figure}[t]
-\centering
-\includegraphics[height=3cm]{fig1.eps}
-\caption{The three depth-enhancement shaders applied to the \emph{same} base material and geometry:
-(a)~Phong (reference), (b)~fog, (c)~pseudo-chromadepth. \textbf{[TODO: replace
-placeholder.]}}\label{fig:shaders}
-\end{figure}
+\begin{theorem}
+This is a sample theorem. The run-in heading is set in bold, while
+the following text appears in italics. Definitions, lemmas,
+propositions, and corollaries are styled the same way.
+\end{theorem}
 
-\section{Study Design and Protocol}\label{sec:design}
+\begin{proof}
+Proofs, examples, and remarks have the initial word in italics,
+while the following text appears in normal font.
+\end{proof}
+For citations of references, we prefer the use of square brackets
+and consecutive numbers. Citations using labels or the author/year
+convention are also acceptable. The following bibliography provides
+a sample reference list with entries for journal
+articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
+book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
+and a homepage~\cite{ref_url1}. Multiple citations are grouped
+\cite{ref_article1,ref_lncs1,ref_book1},
+\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
 
-\subsection{Task and Ground Truth}\label{sec:design-task}
-The mesh is world-locked to the workspace with a spatial anchor and viewed through the passthrough cameras, appearing as a solid object on the participant's table. On each trial the participant views the vasculature under one shader condition and indicates the perceived 3D location of a designated target vessel by positioning a virtual marker with a hand controller. Ground truth is provided by the preset references mark placed on the segmented mesh, providing an unambiguous point on the mesh curvature.
+\begin{comment}  
 
-\subsection{Conditions and Confound Controls}\label{sec:design-conditions}
-The single manipulated factor is the depth-enhancement shader, applied within subjects: Phong, fog, and pseudo-chromadepth (Section~\ref{sec:system-shaders}). The overriding control is that a single base material and correct opaque occlusion are held constant across all conditions, so each shader changes only how distance is encoded, not the underlying surface or its occlusion~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}. Fog is an explicit, parameterised depth-to-desaturation function \emph{disabled} in the non-fog conditions, so the fog condition isolates an added distance encoding; in passthrough it blends toward a fixed reference colour rather than the variable real background, so it is not confounded with scene content. Stereo separation, motion parallax, the passthrough path, and real-world occlusion are held identical across conditions; manipulating occlusion handling is left to future work (Section~\ref{sec:discussion}).
-
-\subsection{Procedure and Difficulty Calibration}\label{sec:design-procedure}
-After a short tutorial, each participant completes the three conditions in a randomized order, with 18 targets in total spanning a range of depths. TODO: Fill in here. Two considerations shape the methodology.
-First, because stereo and parallax can still produce a strong ceiling effect~\cite{heinrich_estimating_2021,titov_effect_2021}, difficulty is raised deliberately: multiple targets sit deep in the vasculature, behind other vessels so occlusion ordering is ambiguous (self-occlusion), and in visually crowded regions known to degrade depth perception~\cite{lesar_evaluation_2024}. Second, because free head movement recovers depth from parallax, head pose is logged throughout as a covariant.
-
-\subsection{Error Metrics and Outcomes}\label{sec:design-metrics} For each placement, the 3D error vector between the marker and the ground-truth marker node is decomposed - using the headset pose at placement - into a component along the view camera axis, the depth placement error, and an orthogonal lateral component. This separation is standard in 3D pointing since depth is the axis on which the cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, and only the depth component is diagnostic of a shader's effect. The signed depth error is also recorded, to detect the systematic depth compression characteristic of head-mounted displays. The pre-registered primary outcome is the unsigned depth error, whereas lateral error, signed depth error, and completion time are secondary.
-
-\subsection{Participants, Power, and Analysis}\label{sec:design-analysis}
-Participants are drawn from a non-clinical population on the rationale that the core depth judgement is a basic visual-system function and that prior work found similar novice/expert cue rankings for it~\cite{kersten-oertel_evaluation_2014}. Prior AR/VR experience and anatomy familiarity are collected as covariates, and an optional small expert arm allows a clinical-validity check. \textbf{[TODO: More detail here]} The analysis is pre-registered: depth error is modelled with a linear mixed-effects model with shadre condition as a fixed effect, with target depth and logged covariates as controls. [TODO: Comparisons and statistical analysis here] Because the literature predicts a possible null result, the design is powered for the difficulty-manipulated contrast, and a null is not treated as uninformative. (Section~\ref{sec:discussion}).
-
-\section{Feasibility and Preliminary Results}\label{sec:results}
-
-\subsubsection{You know, the actual work :)}
-
-
-\section{Discussion, Limitations, and Conclusion}\label{sec:discussion}
-
-\subsubsection{Interpreting the anticipated outcomes}
-Because passthrough MR does not trivially solve depth - the mesh competes with a textured background, the imagery is distorted and latent, and depth relative to the real scene is easily misjudged - depth-enhancement shaders have more room to help here than in immersive VR, where native cues dominate and shader differences wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. A reliable improvement in the \emph{depth} component of placement error would be directly useful for MR neuronavigation, whereas a null would itself be informative: even in this harder regime, and with a physical anchor supplying a strong external depth reference, added shader cues would not improve vessel depth judgement. The pre-registered analysis and the depth-versus-lateral decomposition make either outcome interpretable, and the difficulty calibration (Section~\ref{sec:design-procedure}) keeps the comparison sensitive.
-
-\subsubsection{Limitations}
-
-%%
-%%Several limitations bound the design. Rendering an opaque vessel \emph{mesh} rather than the full volume is what makes the system run untethered and cleanly isolates the shader manipulation, but it abstracts away the surrounding tissue and the semi-transparent embedding that characteries the clinical view; the study therefore speaks to depth judgement of the vascular surface in situ rather than of vessels seen through translucent parenchyma(TODO: Make sure this is the right word if we use this). The subtlest remaining limitation is the overlap between fog and any residual distance shading; we drive fog from an explicit depth function that blends toward a fixed reference colour (Section~\ref{sec:design-conditions}) and report its parameters in full. Passthrough adds its own limitations such as geometric distortion, limited resolution, latency, and residual registration error, but we have countered this somewhat through a rigidly maintained test protocol to assume similar conditions with each participant. Because the mesh is anchored to the workspace rather than a patient, the study speaks to MR planning and training rather than in-situ intraoperative navigation, however this could be added in future.
-
-
-\subsubsection{Conclusion and outlook}
-We have presented a standalone passthrough-MR system that renders a registered cerebral-vasculature mesh on the Meta Quest~3 and a controlled, pre-registered methodology for evaluating whether depth-enhancement shaders improve depth judgement in this setting. \textbf{[TODO: Actually write you know, the results :) ]}
-
-\begin{comment}
-%% Removed for anonymized submission. Reinstate in the camera-ready version if accepted.
+%% removed to make this anonymous :)
+    
 \begin{credits}
-\subsubsection{\ackname} \textbf{[TODO]}
+\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper is
+used for general acknowledgments, for example: This study was funded
+by X (grant number Y).
+
 \subsubsection{\discintname}
-The authors have no competing interests to declare that are relevant to the content of this article.
+It is now necessary to declare any competing interests or to specifically
+state that the authors have no competing interests. Please place the
+statement with a bold run-in heading in small font size beneath the
+(optional) acknowledgments\footnote{If EquinOCS, our proceedings submission
+system, is used, then the disclaimer can be provided directly in the system.},
+for example: The authors have no competing interests to declare that are
+relevant to the content of this article. Or: Author A has received research
+grants from Company W. Author B has received a speaker honorarium from
+Company X and owns stock in Company Y. Author C is a member of committee Z.
 \end{credits}
+
 \end{comment}
-
 %
-% -- Bibliography --
+% ---- Bibliography ----
 %
-\bibliographystyle{splncs04}
-\bibliography{zotero}
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+%
+\begin{thebibliography}{8}
+\bibitem{ref_article1}
+Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
 
+\bibitem{ref_lncs1}
+Author, F., Author, S.: Title of a proceedings paper. In: Editor,
+F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
+Springer, Heidelberg (2016). \doi{10.10007/1234567890}
+
+\bibitem{ref_book1}
+Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
+Location (1999)
+
+\bibitem{ref_proc1}
+Author, A.-B.: Contribution title. In: 9th International Proceedings
+on Proceedings, pp. 1--2. Publisher, Location (2010)
+
+\bibitem{ref_url1}
+LNCS Homepage, \url{http://www.springer.com/lncs}, last accessed 2023/10/25
+\end{thebibliography}
 \end{document}
