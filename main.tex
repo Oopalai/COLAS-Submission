@@ -1,457 +1,190 @@
-% COLAS submission -- anonymized LNCS/MICCAI template.
-% Compile: pdflatex -> bibtex -> pdflatex -> pdflatex  (splncs04, numbered [n]).
-% Page budget: 8 pages main content + up to 2 pages references (10 total).
-% Anonymized for double-blind review: author/affiliation/email masked; self-references in third person.
-%
-% REWRITTEN (Jul 2026) against the completed study. The previous draft was a PROPOSAL for a
-% pre-registered protocol; it described an apparatus that was not the one run (a bare vessel mesh
-% with no brain shell and no probe cutaway), and claimed a pre-registration that does not exist.
-% Both are corrected here. Every number below traces to analyze_study.py / stats_report.txt.
-%
-% THE STUDY WAS NOT PRE-REGISTERED. The outcome emphasis was fixed in advance with the supervisor,
-% but there is no timestamped public registration, so nothing here claims one and all inferential
-% results are labelled exploratory.
-%
+%MAKE ABSOLUTELY CERTAIN YOU ANONYMIZE DUMMY DESK REJECTIONS ARE FAIL
+
 \documentclass[runningheads]{llncs}
 %
 \usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{comment}
+% T1 fonts will be used to generate the final print and online PDFs,
+% so please use T1 fonts in your manuscript whenever possible.
+% Other font encodings may result in incorrect characters.
+%
+\usepackage{graphicx,verbatim}
+% Used for displaying a sample figure. If possible, figure files should
+% be included in EPS format.
+%
+% If you use the hyperref package, please uncomment the following two lines
+% to display URLs in blue roman font according to Springer's eBook style:
+%\usepackage{color}
+%\renewcommand\UrlFont{\color{blue}\rmfamily}
+%\urlstyle{rm}
 %
 \begin{document}
 %
-\title{Preference Without Benefit: Depth-Enhancement Shaders for Cerebral Vasculature in Passthrough Mixed Reality}
+\title{Contributing Title}
 %
-\titlerunning{Preference Without Benefit in Passthrough MR}
+\begin{comment}  %% Removed for anonymized MICCAI 2025 submission
+\author{First Author\inst{1}\orcidID{0000-1111-2222-3333} \and
+Second Author\inst{2,3}\orcidID{1111-2222-3333-4444} \and
+Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 %
-\author{Anonymized Authors}  %% Anonymized for double-blind COLAS submission
+\end{comment}
+
+\author{Anon Authors}  %% Added for anonymized MICCAI 2025 submission
 \authorrunning{Anonymized Author et al.}
 \institute{Anonymized Affiliations \\
     \email{email@anonymized.com}}
-%
-\maketitle
+
+    
+\maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-Judging the depth of cerebral vessels is central to neurosurgical planning, and depth-enhancement
-shaders such as aerial perspective (fog) and pseudo-chromadepth measurably improve such judgements on
-2D displays. Whether they help in video see-through (passthrough) Mixed Reality (MR) --- where virtual
-anatomy competes with a real background, but binocular disparity and motion parallax are also available
---- is open. We report a within-subjects study ($n=12$) on a standalone Meta Quest~3. Participants
-viewed a cerebral-vasculature mesh embedded in a brain shell, opened by a virtual probe that cut an
-aperture into the shell, and performed a two-stage task: identify a designated marker among three
-candidates, then place a marker at its remembered location once it was hidden. We first establish that
-the task is depth-limited: placement error along the view axis was approximately $2.4\times$ larger than
-per-axis lateral error, in all 12 participants without exception (Wilcoxon $W=0$, $p=0.00049$, the
-minimum attainable at $n=12$). Against that sensitive task, no shader produced any detectable effect on
-any performance outcome. Subjectively, however, participants diverged sharply: 7 of 10 single-choice
-respondents named pseudo-chromadepth the most helpful shader (binomial $p=0.020$, exploratory), none
-chose fog, and Phong was rated worst on all six workload subscales. Users preferred a cue that did not
-measurably help them. We argue this dissociation arises because viewing was unconstrained: with free
-head movement over world-locked anatomy, motion parallax supplies the depth information the shaders
-would otherwise carry, leaving no headroom for a shader to act in. The study is exploratory and not
-pre-registered.
+The abstract should briefly summarize the contents of the paper in 150--250 words.  If you are to include a link to your Repository, please make sure it is anonymized for the double-blind review phase.
 
-\keywords{Mixed reality \and Passthrough video see-through \and Depth perception \and Cerebral
-angiography \and Subjective preference \and Neurosurgical planning.}
+\keywords{First keyword  \and Second keyword \and Another keyword.}
+% Authors must provide keywords and are not allowed to remove this Keyword section.
+
 \end{abstract}
 %
 %
 %
-\section{Introduction}\label{sec:intro}
+\section{Important Messages to MICCAI Authors}
 
-Neurovascular interventions --- including the planning and clipping of aneurysms, the resection of
-arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs) --- depend on a
-precise, three-dimensional understanding of how target vessels are situated within the surrounding
-brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the \emph{depth} of a
-vessel of interest: it is typically embedded within, and partially occluded by, other anatomy, so its
-position relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat
-desktop renderings used in conventional review, which provide weak and often ambiguous depth
-information~\cite{kersten-oertel_augmented_2015-1}.
+This is a modified version of Springer's LNCS template suitable for anonymized MICCAI 2025 main conference submissions. The author section has already been anonymized for you.  You cannot remove the author section to gain extra writing space.  You must not remove the abstract and the keyword sections in your submission.
 
-Video see-through (passthrough) Mixed Reality (MR) is an appealing medium for this task: a head-mounted
-stereoscopic display supplies binocular disparity and head-coupled motion parallax --- two of the
-strongest depth cues --- while registering the vasculature to the clinician's real workspace keeps the
-physical environment as context. On 2D displays, depth-enhancement shaders such as aerial perspective
-(fog) and pseudo-chromadepth substantially improve depth judgements of vascular
-data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In immersive VR, by contrast,
-stereo and parallax are so strong that shader differences largely wash
-out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR has been argued to sit between
-these regimes: the virtual anatomy competes with a real, textured background, and the passthrough
-imagery is geometrically distorted, reduced in resolution, and latent --- the depth and occlusion
-problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. On that reasoning,
-shaders should have more room to help here than in VR.
+To avoid an accidental anonymity breach, you are not required to include the acknowledgments and the Disclosure of Interest sections for the initial submission phase.  If your paper is accepted, you must reinsert these sections to your final paper. 
 
-We tested that expectation and did not find it. This paper reports a within-subjects study ($n=12$) on a
-standalone Meta Quest~3 comparing three shaders --- Phong (reference), fog, and pseudo-chromadepth ---
-on an absolute in-scene placement task. Our contributions are:
+To avoid desk rejection of your paper, you are encouraged to read "Avoiding Desk Rejection" by the MICCAI submission platform manager.  A few important rules are summarized below for your reference:  
+\begin{enumerate}
+    \item Do not modify or remove the provided anonymized author section.
+    \item Do not remove the abstract and keyword sections to gain extra writing space. Authors must provide at least one keyword.
+    \item Inline figures (wrapping text around a figure) are not allowed.
+    \item Authors are not allowed to change the default margins, font size, font type, and document style.  If you are using any additional packages, it is the author's responsibility that any additional packages do not inherently change the document's layout.
+    \item It is prohibited to use commands such as \verb|\vspace| and \verb|\hspace| to reduce the pre-set white space in the document.
+    \item Please make sure your figures and tables do not span into the margins.
+    \item If you have tables, the smallest font size allowed is 8pt.
+    \item Please ensure your paper is properly anonymized.  Refer to your previously published paper in the third person.  Data collection location and private dataset should be masked.
+    \item Your paper must not exceed the page limit.  You can have 8 pages of the main content (text (including paper title, author section, abstract, keyword section), figures and tables, and conclusion) plus up to 2 pages of references.  The reference section does not need to start on a new page.  If you include the acknowledgments and the Disclosure of Interest sections, these two sections are considered part of the main content.
+    \item If you submit supplementary material, please note that reviewers are encouraged but not required to read it.  The main paper should be self-contained.  *NEW* Supplementary materials are limited to multimedia content (e.g., videos) as warranted by the technical application (e.g. robotics, surgery, ….). These files should not display any proofs, analysis, or additional results, and should not show any identification markers either. Violation of this guideline will lead to desk rejection. PDF files may NOT be submitted as supplementary materials in 2025 unless authors are citing a paper that has not yet been published.  In such a case, authors are required to submit an anonymized version of the cited paper.
+\end{enumerate}
 
-\begin{itemize}
-  \item A \emph{standalone} passthrough-MR system that renders a cerebral-vasculature mesh inside a
-        brain shell, world-locked to the workspace, with a probe-driven aperture that reveals the
-        vasculature in situ (Section~\ref{sec:system}).
-  \item A demonstration that the placement task is genuinely \emph{depth-limited}: view-axis error is
-        approximately $2.4\times$ per-axis lateral error, in every participant
-        (Section~\ref{sec:results-validity}). This matters because a null on an insensitive task is
-        uninformative; ours is not.
-  \item The central finding --- a \emph{dissociation}. No shader affected any performance outcome, yet
-        participants strongly preferred pseudo-chromadepth and rated Phong as most demanding on every
-        workload subscale (Sections~\ref{sec:results-perf}--\ref{sec:results-subj}).
-  \item An account of why: with unconstrained viewing of world-locked anatomy, motion parallax already
-        supplies the depth information, leaving no headroom for a shader
-        (Section~\ref{sec:discussion}).
-\end{itemize}
 
-\section{Related Work}\label{sec:related}
+\section{Section}
+\subsection{A Subsection Sample}
+Please note that the first paragraph of a section or subsection is
+not indented. The first paragraph that follows a table, figure,
+equation etc. does not need an indent, either.
 
-\subsubsection{Depth cues for vascular visualisation.}
-For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline; on a
-surface mesh its normals are well defined, so it is a fair reference rather than a source of gradient
-noise. Added depth cues improve on it. Aerial perspective (fog) encodes distance as
-desaturation/attenuation, and pseudo-chromadepth --- a depth-to-colour ($\text{red}\rightarrow\text{blue}$)
-mapping introduced for angiography~\cite{ropinski_visually_2006} --- is consistently rated among the
-strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014}; it has been adapted
-specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}, the setting we adopt.
-These results motivate our three-condition set. Depth-cue comparisons are well developed for surface
-renderings on conventional and VR displays~\cite{hombeck_evaluating_2022}, but have not been transferred
-to registered, passthrough-MR viewing of cerebral vasculature.
+Subsequent paragraphs, however, are indented.
 
-\subsubsection{Depth perception in immersive VR and the ceiling effect.}
-Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and
-motion parallax are themselves powerful cues, and several studies report that shader choice then matters
-little: depth judgements of vascular models were more precise in VR than on desktop yet barely
-distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on
-relative-depth perception for angiographic volumes in VR~\cite{titov_effect_2021}, and, once camera
-motion is permitted, depth perception depends more on scene content than on the chosen
-technique~\cite{lesar_evaluation_2024}. Our result is best read as an extension of this ceiling effect
-rather than a contradiction of it (Section~\ref{sec:discussion}). Methodologically, 3D-pointing studies
-show that error along the view (depth) axis behaves differently from lateral error and is the axis on
-which depth cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition
-rather than a single 3D distance --- and, in our case, supplying the validity check of
-Section~\ref{sec:results-validity}.
+\subsubsection{Sample Heading (Third Level)} Only two levels of
+headings should be numbered. Lower level headings remain unnumbered;
+they are formatted as run-in headings.
 
-\subsubsection{Depth perception in passthrough augmented and mixed reality.}
-Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content
-overlaid on a real scene is systematically misperceived, modulated by display type, shadows, and
-relative position~\cite{adams_depth_2022} and by object shape, colour, and
-luminance~\cite{do_effects_2020}; without correct occlusion, virtual structures appear to float in front
-of real ones, a long-standing, only partially solved
-problem~\cite{macedo_occlusion_2023,shah_occlusion_2012}. These effects are acute for medical overlays,
-and depth-enhancing vascular visualisation has been pursued specifically for neurovascular
-AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}.
+\paragraph{Sample Heading (Fourth Level)}
+The contribution should contain no more than four levels of
+headings. Table~\ref{tab1} gives a summary of all heading levels.
 
-\subsubsection{Preference versus performance.}
-That users \emph{prefer} a visualisation is not evidence that it helps them. Prior work on vascular
-depth cues has reported subjective ratings alongside performance and found pseudo-chromadepth rated
-highly~\cite{kersten-oertel_evaluation_2014}, and the general possibility that preference and
-performance dissociate is well known in visualisation evaluation. Our study is, to our knowledge, the
-first to report such a dissociation for depth-enhancement shaders in passthrough MR, and --- because we
-first establish that the task is depth-sensitive --- to be able to attribute the null to the viewing
-regime rather than to an insensitive measure.
-
-\section{System}\label{sec:system}
-
-\subsection{Anatomical Model}\label{sec:system-mesh}
-The stimulus is a surface mesh of the prominent cerebral vasculature, segmented from a single-patient
-time-of-flight MR angiography (TOF-MRA) scan in 3D Slicer~\cite{fedorov_3d_2012} over pre-defined
-anatomical regions of interest, restricted to the vasculature clearly apparent in the scan. The surface
-was generated with Slicer's Model Maker and then cleaned and smoothed, and affinely registered to the
-ICBM-152 template brain~\cite{fonov_unbiased_2011}, which supplies the outer brain shell. Smoothing
-matters for the comparison at hand: it yields well-defined surface normals, so the Phong reference
-reflects genuine local shading rather than segmentation-boundary noise. The model is therefore a \emph{composite}: one patient's vessels in a population-average
-brain, not patient-specific anatomy. Because the registration is affine rather than deformable, the
-vessels sit in approximately --- not exactly --- their anatomical position relative to the template. Both
-choices are adequate for a perceptual study, where the requirement is plausible and internally
-consistent geometry rather than clinical fidelity, but they bound the clinical reading of our results
-(Section~\ref{sec:limitations}). Rendering an opaque surface mesh rather than performing
-direct volume rendering is what makes the system run untethered: raymarched DVR of a brain volume is
-bandwidth- and fragment-shader-bound and has been sustained only on PC-tethered or externally
-accelerated systems~\cite{faludi_multivolume_2025}. A mesh also removes the transfer function as a
-confound --- with no opacity ramp, occlusion is simply correct surface occlusion, held constant across
-conditions.
-\textbf{[TODO: state whether the TOF-MRA scan is from a public dataset (cite it) or is institutional
-patient data (add the corresponding data-use / REB statement). The paper currently has neither.]}
-
-\subsection{Depth-Enhancement Shaders}\label{sec:system-shaders}
-The three conditions share a single base material --- surface colour and Phong lighting response --- and
-differ only in the added distance encoding: \emph{Phong}, standard local surface shading, the reference;
-\emph{fog}, an explicit parameterised depth$\rightarrow$desaturation applied post-shading and disabled in
-the other conditions; and \emph{pseudo-chromadepth}, a depth-dependent red$\rightarrow$blue colour
-mapping~\cite{ropinski_visually_2006,behrendt_combining_2017}. Because the base material and occlusion
-are identical across conditions, each shader changes only how distance is encoded, not the underlying
-surface. In passthrough, fog blends toward a fixed reference colour rather than the variable real
-background, so it is not confounded with scene content.
-\textbf{[TODO: report the fog and chromadepth parameters (near/far planes, colour endpoints) in full.]}
-
-\subsection{Probe and Aperture}\label{sec:system-probe}
-The vasculature is enclosed by the opaque brain shell and is not visible from outside it. Bringing a
-hand-held virtual probe near the shell cuts a small aperture into it, which remains open, revealing the
-vessels within; the probe may be advanced inside the shell. This deliberately mimics the constrained
-view of a neurosurgical approach: a small opening, a target beneath it, and an instrument reaching
-through. The tip of the probe is the interaction point for both stages of the task
-(Section~\ref{sec:design-task}).
-
-\subsection{Passthrough Compositing and Registration}\label{sec:system-passthrough}
-The system is built in Unreal Engine
-\textbf{[TODO: confirm version; the previous draft said 5.7.3]}. The model is drawn over the Quest~3
-passthrough feed using Meta's Passthrough API and world-locked to the participant's desk with a Meta
-Spatial Anchor, so it remains static as the participant moves. We stress that this anchor is a
-\emph{software} world-lock, not a physical object: it does not supply a real surface at a known
-distance. What it does supply is veridical \emph{motion parallax}, which proves central to interpreting
-our result (Section~\ref{sec:discussion}). The model was re-anchored per session, so its pose differs
-between participants; all reported geometry is computed within-participant.
-
-\begin{figure}[t]
-\centering
-\includegraphics[height=3.2cm]{fig1.eps}
-\caption{The brain shell and enclosed vasculature composited over Quest~3 passthrough and world-locked
-with a Meta Spatial Anchor, with the probe-cut aperture revealing the vessels (in-headset capture).
-\textbf{[TODO: replace placeholder.]}}\label{fig:system}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[height=3cm]{fig1.eps}
-\caption{The three depth-enhancement shaders applied to the \emph{same} base material and geometry:
-(a)~Phong (reference), (b)~fog, (c)~pseudo-chromadepth. \textbf{[TODO: replace
-placeholder.]}}\label{fig:shaders}
-\end{figure}
-
-\section{Study Design}\label{sec:design}
-
-\subsection{Task}\label{sec:design-task}
-On each trial, three small white markers were displayed on the vessel surface at differing depths.
-Participants were instructed: \emph{``Select the marker in the middle of the three dots.''} They
-selected one with the probe tip and confirmed with a button press, at which point \textbf{the markers
-were hidden} and they placed a marker at the remembered location of the one they had selected. The
-placement stage is therefore \emph{open-loop}: participants could not see the target while placing, and
-so could not converge on it by visual alignment. This is what makes placement a depth judgement rather
-than a visuomotor tracking task, and it is confirmed empirically in
-Section~\ref{sec:results-validity}. Ground truth is the position of the designated marker; error is
-decomposed, using the headset pose at placement, into a component along the view axis (\emph{depth}) and
-an orthogonal \emph{lateral} component~\cite{teather_pointing_2011,batmaz_effect_2022}.
-
-\subsection{Conditions and Design}\label{sec:design-conditions}
-The single manipulated factor was the shader, applied within subjects. Each participant completed 18
-trials: six target locations, each presented once under each of the three shaders. Shader is thus
-crossed with target by construction and cannot be confounded with target identity. Presentation order
-was shuffled per participant (12/12 distinct orders; no order effect detectable, Spearman
-$\rho=+0.09$, $p=0.23$). All participants saw the same target locations, re-anchored per session.
-
-The model is rendered at life size: the marker cloud spans $22.9 \times 2.7 \times 17.0$\,cm, with a
-median nearest-neighbour marker spacing of $2.68$\,cm, and participants viewed targets from a mean of
-$48$\,cm (range $16$--$72$\,cm). Because viewing was unconstrained, the depth separation of the three
-candidate markers was itself determined by the viewpoint each participant adopted: it varied from
-$0.2$ to $18.9$\,cm across trials (median $4.0$\,cm), with all three markers falling within $2$\,cm of
-one another in depth on 36 of 180 trials. The difficulty of the selection stage was therefore not held
-constant, a point we return to in Section~\ref{sec:limitations}.
-
-\subsection{Excluded Trials}\label{sec:design-exclusions}
-One target block (trials 15--17, three trials per participant) is excluded from all analyses, leaving
-$12 \times 15 = 180$ trials in a balanced 5/5/5 design. The ground-truth point for that block is not a
-plausible target: it lies $8.14$ units from the nearest other marker in the stimulus, against a median
-nearest-neighbour marker spacing of $2.68$ units --- roughly $3\times$ off-cloud. Because the model is
-rigidly re-anchored per session and distances are invariant under rigid transforms, these two figures
-are \emph{identical to two decimal places for all twelve participants}, which identifies the cause as a
-single authoring fault in the stimulus rather than a per-session error. The block accordingly shows
-$0/36$ selection accuracy across every participant --- a deterministic outcome, not a behavioural one.
-The exclusion is on apparatus grounds and is independent of the shader comparison; the block was
-uniformly faulty across all three conditions.
-
-\subsection{Participants and Procedure}\label{sec:design-participants}
-Twelve participants were drawn from a non-clinical population, on the rationale that the core depth
-judgement is a basic visual-system function and that prior work found similar novice/expert cue rankings
-for it~\cite{kersten-oertel_evaluation_2014}. Five wore glasses. Most were VR novices (seven had used a
-headset only once or twice; two weekly, one monthly, two yearly). Six reported no familiarity with brain
-anatomy, three some, one detailed. Sessions took approximately 25 minutes.
-\textbf{[TODO: training block details; ethics approval reference.]}
-
-\subsection{Analysis}\label{sec:design-analysis}
-\textbf{This study was not pre-registered.} The emphasis on view-axis depth error as the outcome of
-interest was fixed in advance in consultation with the supervisor, and follows the 3D-pointing
-literature in which depth is the axis on which cues act~\cite{teather_pointing_2011,batmaz_effect_2022};
-but there is no timestamped public registration, and we therefore report all outcomes as
-\emph{exploratory} and privilege none of them inferentially. All outcomes examined are reported below,
-including those that are null. Because $n=12$ and the per-participant distributions are not assumed
-normal, we use Friedman omnibus tests with Wilcoxon signed-rank post-hocs under Holm correction. We note
-throughout that with $n=12$ the smallest two-sided $p$ attainable by any distribution-free test is
-$2/2^{12}=0.00049$; any smaller value would be an artefact of a parametric assumption rather than
-something the data can support.
-
-\section{Results}\label{sec:results}
-
-\subsection{The task is depth-limited}\label{sec:results-validity}
-A null result is only informative if the task could have detected an effect. We therefore first ask
-whether placement error is dominated by depth at all, or is merely isotropic hand noise --- which, having
-no preferred axis, could not be improved by any depth cue.
-
-We decomposed each error vector in a view-aligned orthonormal frame (one axis along the view direction,
-two perpendicular) and compared RMS error along each. This makes no distributional assumption. Depth RMS
-error was $0.429$ against a per-axis lateral RMS of $0.193$: a ratio of $2.37$ (median $2.41$). The
-effect is unanimous --- \emph{all twelve} participants show depth error exceeding lateral error
-(Wilcoxon signed-rank $W=0$, $p=0.00049$, which is exactly the floor at $n=12$). The evidence here is
-the unanimity and the magnitude; the $p$-value merely confirms that twelve-for-twelve is not a coin
-flip.
-
-Depth is thus roughly $2.4\times$ harder than the lateral axes in this task, exactly as the pointing
-literature predicts~\cite{teather_pointing_2011,batmaz_effect_2022}. The task has a large, depth-specific
-error component available for a shader to reduce.
-
-\subsection{No shader affected performance}\label{sec:results-perf}
-No shader reduced it. Table~\ref{tab:perf} reports every performance outcome examined; all are null,
-and no pairwise contrast survives Holm correction.
-
-\begin{table}[t]
-\caption{Performance outcomes (per-participant means, $n=12$). Errors in cm; times in seconds. No
-outcome is significant.}\label{tab:perf}
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Outcome & Phong & Fog & Chromadepth & Friedman \\
-\midrule
-Selection accuracy      & 0.867 & 0.850 & 0.900 & $\chi^2=1.53$, $p=0.466$ \\
-Depth error, unsigned   & 0.315 & 0.368 & 0.322 & $\chi^2=0.50$, $p=0.779$ \\
-Lateral error           & 0.204 & 0.228 & 0.261 & $\chi^2=2.00$, $p=0.368$ \\
-Depth error, signed     & $-0.069$ & $-0.167$ & $-0.036$ & $\chi^2=1.17$, $p=0.558$ \\
-Time to place (s)       & 6.85  & 8.98  & 7.71  & $\chi^2=1.17$, $p=0.558$ \\
-Time to select (s)      & 21.57 & 20.13 & 26.57 & $\chi^2=2.67$, $p=0.264$ \\
-\bottomrule
+\begin{table}
+\caption{Table captions should be placed above the
+tables.}\label{tab1}
+\begin{tabular}{|l|l|l|}
+\hline
+Heading level &  Example & Font size and style\\
+\hline
+Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
+1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
+2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
+3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
+4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
+\hline
 \end{tabular}
 \end{table}
 
-Signed depth error was slightly negative in all conditions (grand mean $-0.088$), the direction expected
-for the depth compression characteristic of head-mounted displays, but did not differ from zero
-($t=-1.45$, $p=0.174$).
 
-\subsection{But participants strongly preferred chromadepth}\label{sec:results-subj}
-Subjective responses diverge sharply from performance. Asked which shader they found most helpful, 7 of
-the 10 participants who named a single condition chose pseudo-chromadepth and 3 chose Phong;
-\emph{none} chose fog (binomial against $1/3$: $p=0.020$). Counting the two further participants who
-named several conditions, chromadepth was named by 9 of 12.
+\noindent Displayed equations are centered and set on a separate
+line.
+\begin{equation}
+x + y = z
+\end{equation}
+Please try to avoid rasterized images for line-art diagrams and
+schemas. Whenever possible, use vector graphics instead (see
+Fig.~\ref{fig1}).
 
-\textbf{This item is damaged and we report it with that caveat.} The response options were edited
-partway through data collection, so one condition appears under two labels (merged before tallying), and
-the item permitted multiple selections rather than forcing a choice. It is also one significant result
-among approximately thirteen tests in an unregistered study, and would not survive Bonferroni correction
-across that set ($0.05/13 = 0.0038$). We therefore treat it as exploratory and suggestive, not
-confirmatory.
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1.eps}
+\caption{A figure caption is always placed below the illustration.
+Please note that short captions are centered, while long ones are
+justified by the macro package automatically.} \label{fig1}
+\end{figure}
 
-Workload responses corroborate the direction. On a seven-point TLX-style
-instrument~\cite{hart_development_1988} (higher is worse on every subscale; the Performance subscale
-correlates positively with the other five, $r=+0.39$ to $+0.79$, confirming it is not reverse-coded
-here), Phong scored worst on \emph{all six} subscales (Table~\ref{tab:tlx}). No subscale reaches
-significance --- Effort is closest ($p=0.063$) --- and the subscales are correlated, so this is
-corroborating rather than independent evidence. But the direction is unanimous.
+\begin{theorem}
+This is a sample theorem. The run-in heading is set in bold, while
+the following text appears in italics. Definitions, lemmas,
+propositions, and corollaries are styled the same way.
+\end{theorem}
 
-\begin{table}[t]
-\caption{Workload, 7-point TLX-style instrument (per-participant means, $n=12$; higher is worse). Phong
-is rated worst on every subscale; none is significant.}\label{tab:tlx}
-\centering
-\begin{tabular}{lcccc}
-\toprule
-Subscale & Phong & Fog & Chromadepth & Friedman \\
-\midrule
-Mental Demand   & 4.33 & 3.50 & 3.42 & $\chi^2=1.37$, $p=0.505$ \\
-Physical Demand & 3.75 & 3.33 & 3.58 & $\chi^2=2.70$, $p=0.260$ \\
-Temporal Demand & 2.25 & 1.92 & 1.50 & $\chi^2=3.56$, $p=0.168$ \\
-Performance     & 3.83 & 3.42 & 3.50 & $\chi^2=1.15$, $p=0.562$ \\
-Effort          & 4.17 & 3.50 & 3.42 & $\chi^2=5.52$, $p=0.063$ \\
-Frustration     & 3.83 & 2.75 & 2.75 & $\chi^2=3.71$, $p=0.156$ \\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{proof}
+Proofs, examples, and remarks have the initial word in italics,
+while the following text appears in normal font.
+\end{proof}
+For citations of references, we prefer the use of square brackets
+and consecutive numbers. Citations using labels or the author/year
+convention are also acceptable. The following bibliography provides
+a sample reference list with entries for journal
+articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
+book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
+and a homepage~\cite{ref_url1}. Multiple citations are grouped
+\cite{ref_article1,ref_lncs1,ref_book1},
+\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
 
-\section{Discussion}\label{sec:discussion}
+\begin{comment}  
 
-\subsubsection{A dissociation, and why it arises.}
-Our participants preferred a cue that did not measurably help them. The task was demonstrably
-depth-limited ($2.4\times$, unanimous), so the null is not an artefact of an insensitive measure; and
-the preference is consistent across two instruments that point the same way. The natural explanation is
-that \emph{viewing was unconstrained}. Participants moved freely and took as long as they wished:
-head-position range was a median $2.08\times$ the full extent of the marker cloud, and selection times
-reached $235$\,s on some trials. Against world-locked anatomy, free head movement makes motion parallax
-veridical and abundant --- and parallax is precisely a depth cue. The shaders were therefore competing
-against a cue that had already resolved the depth, and had no headroom in which to act.
-
-This makes our result an \emph{extension} of the VR ceiling
-effect~\cite{heinrich_estimating_2021,titov_effect_2021,lesar_evaluation_2024} rather than a
-contradiction of it. The expectation that passthrough MR would restore a role for shaders --- because the
-imagery is degraded and the background cluttered --- was not borne out: when parallax is freely
-available, passthrough behaves like VR in this respect. It is worth being explicit that this is not the
-result we expected, and that our own framing (Section~\ref{sec:intro}) predicted otherwise.
-
-Why, then, the preference? A plausible reading is that chromadepth reduces the \emph{effort} of a
-judgement that participants could make regardless --- consistent with Effort being the subscale closest to
-significance and with Phong scoring worst on all six. A cue can make a task feel easier without making
-it more accurate. For system designers this is not nothing: a visualisation that lowers perceived
-workload at no cost to accuracy may still be worth adopting. But it should not be sold as an accuracy
-aid on this evidence.
-
-\subsection{Limitations}\label{sec:limitations}
-Several limitations bound these conclusions, and the first is the most important.
-
-\emph{Viewing was unconstrained.} We did not restrict head movement or impose a response deadline.
-Because free viewing supplies parallax, our design cannot separate ``shaders do not help in passthrough
-MR'' from ``shaders do not help \emph{when parallax is available}''. We believe the latter, and the
-head-movement data support it, but the study cannot decide between them. This is the single change we
-would make first, and it is arguably the clinically relevant one: a surgeon at a fixed vantage over a
-craniotomy cannot orbit the anatomy, so the parallax-limited regime --- not ours --- is the one that
-matters most.
-
-\emph{The selection stage is not a depth measure.} The instruction ``select the marker in the middle of
-the three dots'' does not specify \emph{middle in depth}, and the app's ground truth defines
-``middle'' in the model's coordinate frame rather than along the view axis. The two come apart: the
-designated marker is the true view-axis middle on only 65\% of trials, and on 60\% of trials a second
-marker also satisfies the model-frame criterion, so the item often has more than one defensible answer.
-Compounding this, unconstrained viewing meant the depth separation of the three candidates was set by
-the participant's own vantage rather than by the design, ranging from $0.2$ to $18.9$\,cm
-(Section~\ref{sec:design-conditions}); on some trials the three markers were effectively coplanar in
-depth, leaving no depth ordering to recover. Selection accuracy is accordingly reported descriptively
-only, and should not be read as a depth-ordering judgement. The placement stage, which is our actual outcome, is unaffected by this: it
-requires only that the participant aims at the marker they chose.
-
-\emph{The sample is small and the study exploratory.} With $n=12$ and no pre-registration, we can claim
-only that we \emph{could not detect} a difference, never that none exists; the confidence intervals
-readily admit effects that would matter clinically. The preference result in particular is one
-significant test among many and needs independent confirmation.
-
-\emph{The scene is fully virtual.} Both the brain shell and the vasculature are rendered; no physical
-object was present. The world-lock supplies parallax but not a real surface at a known distance, so our
-results do not speak to the case where virtual anatomy is registered to a physical phantom or patient.
-
-\emph{The model is a composite.} One patient's vessels registered to a template brain is adequate for
-perceptual work but is not patient-specific anatomy, and the study speaks to depth judgement of a
-vascular surface in situ rather than of vessels seen through translucent parenchyma.
-
-\section{Conclusion}\label{sec:conclusion}
-We built a standalone passthrough-MR system that renders cerebral vasculature inside a probe-openable
-brain shell on a Meta Quest~3, and used it to compare Phong, fog, and pseudo-chromadepth on an
-absolute depth-placement task ($n=12$). The task is demonstrably depth-limited --- view-axis error is
-roughly $2.4\times$ per-axis lateral error, in every participant --- yet no shader improved any
-performance outcome. Participants nonetheless preferred pseudo-chromadepth and rated the Phong reference
-as the most demanding condition on every workload subscale. We attribute the null to unconstrained
-viewing: against world-locked anatomy, free head movement supplies the parallax that leaves shaders no
-headroom.
-
-The clear next step follows directly from that account: constrain the viewpoint, and test whether
-shaders recover a measurable benefit when parallax is unavailable. Registering the anatomy to a physical
-phantom, rather than presenting it fully virtually, is the natural companion change.
-
-\begin{comment}
-%% Removed for anonymized submission. Reinstate in the camera-ready version if accepted.
+%% removed to make this anonymous :)
+    
 \begin{credits}
-\subsubsection{\ackname} \textbf{[TODO]}
-\subsubsection{\discintname}
-The authors have no competing interests to declare that are relevant to the content of this article.
-\end{credits}
-\end{comment}
+\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper is
+used for general acknowledgments, for example: This study was funded
+by X (grant number Y).
 
+\subsubsection{\discintname}
+It is now necessary to declare any competing interests or to specifically
+state that the authors have no competing interests. Please place the
+statement with a bold run-in heading in small font size beneath the
+(optional) acknowledgments\footnote{If EquinOCS, our proceedings submission
+system, is used, then the disclaimer can be provided directly in the system.},
+for example: The authors have no competing interests to declare that are
+relevant to the content of this article. Or: Author A has received research
+grants from Company W. Author B has received a speaker honorarium from
+Company X and owns stock in Company Y. Author C is a member of committee Z.
+\end{credits}
+
+\end{comment}
 %
 % ---- Bibliography ----
 %
-\bibliographystyle{splncs04}
-\bibliography{zotero}
+% BibTeX users should specify bibliography style 'splncs04'.
+% References will then be sorted and formatted in the correct style.
+%
+% \bibliographystyle{splncs04}
+% \bibliography{mybibliography}
+%
+\begin{thebibliography}{8}
+\bibitem{ref_article1}
+Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
 
+\bibitem{ref_lncs1}
+Author, F., Author, S.: Title of a proceedings paper. In: Editor,
+F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
+Springer, Heidelberg (2016). \doi{10.10007/1234567890}
+
+\bibitem{ref_book1}
+Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
+Location (1999)
+
+\bibitem{ref_proc1}
+Author, A.-B.: Contribution title. In: 9th International Proceedings
+on Proceedings, pp. 1--2. Publisher, Location (2010)
+
+\bibitem{ref_url1}
+LNCS Homepage, \url{http://www.springer.com/lncs}, last accessed 2023/10/25
+\end{thebibliography}
 \end{document}
