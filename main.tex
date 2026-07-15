@@ -2,6 +2,7 @@
 
 \documentclass[runningheads]{llncs}
 %
+\usepackage{amsmath}
 \usepackage[T1]{fontenc}
 % T1 fonts will be used to generate the final print and online PDFs,
 % so please use T1 fonts in your manuscript whenever possible.
@@ -37,67 +38,60 @@ Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 \maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-The abstract should briefly summarize the contents of the paper in 150--250 words.  If you are to include a link to your Repository, please make sure it is anonymized for the double-blind review phase.
+Accurately judging the depth of cerebral vessels is central to neurosurgical planning and image-guided navigation. One promising technology to assist in depth and placement determination is video-passthrough augmented reality headsets. This study seeks to determine whether depth-enhancement shaders improve depth perception when virtual anatomy is viewed against a real background. We present a 12 participant pilot study featuring a standalone MR application that anchors the virtual mesh to the real world coordinate and evaluates how participants' depth perception is influenced by three shaders that have been previously shown to contribute highly to depth perception: Phong (reference), aerial-perspective fog, and chromadepth. Participants were asked to correctly identify the middle depth point and then place a fiducial marker on the surface and then report their preferred shadings. Our finds show that while chromadepth is generally preferred by users and percieved as helpful, the measured effect of shaders in passthrough environments is negligible compared to parallax and occlusion.
 
 \keywords{First keyword  \and Second keyword \and Another keyword.}
-% Authors must provide keywords and are not allowed to remove this Keyword section.
+
 
 \end{abstract}
 %
 %
 %
-\section{Important Messages to MICCAI Authors}
+\section{Introduction}\label{sec:intro}
+Neurovascular interventions, including the planning and clipping of aneurysms, the resection of arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs), depend on a precise, three-dimensional understanding of how target vessels are situated within the surrounding brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the depth of a vessel of interest: it is typically embedded within, and partially occluded by, other anatomy, so its position relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat desktop renderings used in conventional review, which provide weak and often ambiguous depth information~\cite{kersten-oertel_augmented_2015-1}. Video passthrough mixed reality (VPMR) is an appealing medium for this task: a head-mounted stereoscopic display supplies binocular disparity and head-coupled motion parallax, two strong depth cues, while registering the vasculature to the clinician's real workspace keeps the physical environment as context. 
 
-This is a modified version of Springer's LNCS template suitable for anonymized MICCAI 2025 main conference submissions. The author section has already been anonymized for you.  You cannot remove the author section to gain extra writing space.  You must not remove the abstract and the keyword sections in your submission.
+ Given the wealth of research done on VR and AR depth perception cues and coloring, there is a gap in knowledge of if depth-enhancement shaders actually improve vessel depth judgement in a VPMR. On 2D displays and fixed overlays, cues such as aerial perspective (fog) and chromadepth substantially improve depth judgements of vascular data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In immersive VR, by contrast, binocular stereo and motion parallax are so strong that shader differences largely wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR sits between these regimes and adds its own difficulties: the virtual mesh competes with a real, textured background, and the passthrough imagery is geometrically distorted, reduced in resolution, and often suffers from the depth and occlusion problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. Whether depth-enhancement shaders help depth judgement here or are largely washed out by stronger cues is therefore an open question we seek to help answer.
 
-To avoid an accidental anonymity breach, you are not required to include the acknowledgments and the Disclosure of Interest sections for the initial submission phase.  If your paper is accepted, you must reinsert these sections to your final paper. 
+\noindent This study makes three contributions:
+\begin{itemize}
+  \item A standalone passthrough-MR system that registers a cerebral-vasculature mesh on the Meta Quest~3 and shades it appropriately while anchoring it to a known physical point in the room.
+  \item A depth-placement task comparison of three depth-enhancement shaders: Phong, fog, and pseudo-chromadepth. Objective measurements collected from the placement task include accuracy, time to place, and the amount of user hand and head movements made while determining the depth.
+  \item A study participant post-task survey to evaluate subjective measures including mental, physical, and temporal stress experiences as well as perceived effectiveness with each shader. \end{itemize}
 
-To avoid desk rejection of your paper, you are encouraged to read "Avoiding Desk Rejection" by the MICCAI submission platform manager.  A few important rules are summarized below for your reference:  
-\begin{enumerate}
-    \item Do not modify or remove the provided anonymized author section.
-    \item Do not remove the abstract and keyword sections to gain extra writing space. Authors must provide at least one keyword.
-    \item Inline figures (wrapping text around a figure) are not allowed.
-    \item Authors are not allowed to change the default margins, font size, font type, and document style.  If you are using any additional packages, it is the author's responsibility that any additional packages do not inherently change the document's layout.
-    \item It is prohibited to use commands such as \verb|\vspace| and \verb|\hspace| to reduce the pre-set white space in the document.
-    \item Please make sure your figures and tables do not span into the margins.
-    \item If you have tables, the smallest font size allowed is 8pt.
-    \item Please ensure your paper is properly anonymized.  Refer to your previously published paper in the third person.  Data collection location and private dataset should be masked.
-    \item Your paper must not exceed the page limit.  You can have 8 pages of the main content (text (including paper title, author section, abstract, keyword section), figures and tables, and conclusion) plus up to 2 pages of references.  The reference section does not need to start on a new page.  If you include the acknowledgments and the Disclosure of Interest sections, these two sections are considered part of the main content.
-    \item If you submit supplementary material, please note that reviewers are encouraged but not required to read it.  The main paper should be self-contained.  *NEW* Supplementary materials are limited to multimedia content (e.g., videos) as warranted by the technical application (e.g. robotics, surgery, ….). These files should not display any proofs, analysis, or additional results, and should not show any identification markers either. Violation of this guideline will lead to desk rejection. PDF files may NOT be submitted as supplementary materials in 2025 unless authors are citing a paper that has not yet been published.  In such a case, authors are required to submit an anonymized version of the cited paper.
-\end{enumerate}
+\section{Related Work}\label{sec:related}
 
+\subsubsection{Depth cues for vascular visualisation.}
+For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline. Added depth cues improve on it. Aerial perspective (fog) encodes distance as desaturation/attenuation of opacity over distance, and pseudo-chromadepth is a depth-to-colour ($\text{red}\rightarrow\text{blue}$) mapping introduced for angiography~\cite{ropinski_visually_2006}. These methods consistently rated among the strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014} and it has been adapted specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}. Depth-cue comparisons are well developed for surface renderings on conventional and VR displays~\cite{hombeck_evaluating_2022}, but have not been transferred to VPMR viewing of cerebral vasculature.
 
-\section{Section}
-\subsection{A Subsection Sample}
-Please note that the first paragraph of a section or subsection is
-not indented. The first paragraph that follows a table, figure,
-equation etc. does not need an indent, either.
+\subsubsection{Depth perception in immersive VR and the ceiling effect.}
+Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and motion parallax are themselves powerful cues, and several studies report that shader choice then matters little: depth judgments of vascular models were more precise in VR than on desktop yet barely distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on relative-depth perception for angiography volumes in VR~\cite{titov_effect_2021}, and, once camera motion is permitted, depth perception depends more on scene content than on the chosen technique~\cite{lesar_evaluation_2024}. This ceiling effect motivates our move to passthrough MR and requires that difficulty be raised deliberately. Methodologically, 3D-pointing studies show that error along the view/depth axis behaves differently from lateral error and is the axis on which depth cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition rather than a single 3D distance.
 
-Subsequent paragraphs, however, are indented.
+\subsubsection{Depth perception in passthrough augmented and mixed reality.}
+Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content overlaid on a real scene is systematically misperceived, modulated by display type, shadows, and relative position~\cite{adams_depth_2022} and by object shape, colour, and luminance~\cite{do_effects_2020}. These effects are acute for medical overlays, and depth-enhancing vascular visualisation has been pursued specifically for neurovascular AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}. The closest prior work compares depth cues for vasculature but on desktop or tethered VR and with relative-depth or detection tasks~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}, and we extend that comparison to standalone passthrough MR and to an in-scene target-placement task whose error is decomposed into depth and lateral components. 
 
-\subsubsection{Sample Heading (Third Level)} Only two levels of
-headings should be numbered. Lower level headings remain unnumbered;
-they are formatted as run-in headings.
+\section{Methodology}\label{sec:related}
+This study focuses on participant depth perception in a VPMR environment. In order to measure this, we present the user with a textured model of a brain based on the ICBM-152 composite. Nested inside of this model is nested a model of vasculature taken from anonymized TOF-MRA patient data(TODO: I need more info here - the scan I have just says Mumu's Data) registered to the ICBM-152 scan. The vasculature is shaded according to one of three conditions: 
 
-\paragraph{Sample Heading (Fourth Level)}
-The contribution should contain no more than four levels of
-headings. Table~\ref{tab1} gives a summary of all heading levels.
+\noindent This study makes three contributions:
+\begin{itemize}
+  \item Phong Shading: A reference baseline shading that does not change with proximity. In this study we used a red shading with a mild specular reflectivity.
+  \item Fog Shading: A distance-based opacity shader that makes the structures closest to the center point more opaque and colored, while the color washes to a semi-transparent grey at a distance.
+  \item Chromadepth: A distance based color gradient shader that colors the surfaces nearest to the reference point as red, and then steps through a color curve as the distance from the reference point increases.
+  \end{itemize}
 
-\begin{table}
-\caption{Table captions should be placed above the
-tables.}\label{tab1}
-\begin{tabular}{|l|l|l|}
-\hline
-Heading level &  Example & Font size and style\\
-\hline
-Title (centered) &  {\Large\bfseries Lecture Notes} & 14 point, bold\\
-1st-level heading &  {\large\bfseries 1 Introduction} & 12 point, bold\\
-2nd-level heading & {\bfseries 2.1 Printing Area} & 10 point, bold\\
-3rd-level heading & {\bfseries Run-in Heading in Bold.} Text follows & 10 point, bold\\
-4th-level heading & {\itshape Lowest Level Heading.} Text follows & 10 point, italic\\
-\hline
-\end{tabular}
-\end{table}
+The shader's reference point was the tip of the virtual probe that extended from the motion controller. Upon bringing the probe to the brain model, a small hole opened in the brain model allowing them to see the inner vasculature model. Participants were asked to perform a sequence of six selection and six marking tasks in each shader. In the selection tasks, three points are placed in the vasculature. The participant was then required to select the point at the middle depth with the probe. Once the point was selected, the participant was asked to place a fiducial marker as close to the surface as they could without going too far into the surface by bringing the tip of the probe to the surface and pulling the trigger button. Participants were allowed to stand or sit, as well as move their head as much or as little as desired. 
+
+During the selection and marking tasks, participant's selection correctness, movement range and viewing angle of the headset, marking accuracy and location are recorded. Upon finishing the selection and marking tasks, the participant is asked to complete a NASA TLX\cite{hart_Staveland_tlx} to review the shading conditions they encountered and give their preferences and subjective experiences with each shader. From these collected metrics and experiences, we can form a better picture of if the shading assisted in depth perception and what the magnitude of their impact was.
+
+\section{User Study}
+\subsection{Participant Demographics}
+Participants were drawn from a non-clinical population on the rationale that the core depth judgement is a basic visual-system function and that prior work found similar novice/expert cue rankings for it~\cite{kersten-oertel_evaluation_2014}. The study was fully completed by 12 participants, 9 female and 3 male, while two participants stopped early due to motion sickness. Of the twelve, five were graduate students, one was a medical professional, while the other participants came from a wide array of professions. The majority of the participants(7) use VR headsets less than once a year, and the usages were primarily either video games or research. Most participants reported no familiarity with the brain anatomy(8), while three were somewhat familiar with brain anatomy and was professionally familiar.
+
+\subsection{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
 
 
 \noindent Displayed equations are centered and set on a separate
@@ -160,31 +154,7 @@ Company X and owns stock in Company Y. Author C is a member of committee Z.
 \end{comment}
 %
 % ---- Bibliography ----
-%
-% BibTeX users should specify bibliography style 'splncs04'.
-% References will then be sorted and formatted in the correct style.
-%
-% \bibliographystyle{splncs04}
-% \bibliography{mybibliography}
-%
-\begin{thebibliography}{8}
-\bibitem{ref_article1}
-Author, F.: Article title. Journal \textbf{2}(5), 99--110 (2016)
+\bibliographystyle{splncs04}
+\bibliography{zotero}
 
-\bibitem{ref_lncs1}
-Author, F., Author, S.: Title of a proceedings paper. In: Editor,
-F., Editor, S. (eds.) CONFERENCE 2016, LNCS, vol. 9999, pp. 1--13.
-Springer, Heidelberg (2016). \doi{10.10007/1234567890}
-
-\bibitem{ref_book1}
-Author, F., Author, S., Author, T.: Book title. 2nd edn. Publisher,
-Location (1999)
-
-\bibitem{ref_proc1}
-Author, A.-B.: Contribution title. In: 9th International Proceedings
-on Proceedings, pp. 1--2. Publisher, Location (2010)
-
-\bibitem{ref_url1}
-LNCS Homepage, \url{http://www.springer.com/lncs}, last accessed 2023/10/25
-\end{thebibliography}
 \end{document}
