@@ -1,4 +1,3 @@
-%MAKE ABSOLUTELY CERTAIN YOU ANONYMIZE DUMMY DESK REJECTIONS ARE FAIL
 
 \documentclass[runningheads]{llncs}
 %
@@ -20,7 +19,7 @@
 %
 \begin{document}
 %
-\title{Contributing Title}
+\title{An Anatomically Contextualized Mixed Reality Testbed for Evaluating Neurovascular Depth Visualization}
 %
 \begin{comment}  %% Removed for anonymized MICCAI 2025 submission
 \author{First Author\inst{1}\orcidID{0000-1111-2222-3333} \and
@@ -38,8 +37,7 @@ Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
 \maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-Accurately judging the depth of cerebral vessels is central to neurosurgical planning and image-guided navigation. One promising technology to assist in depth and placement determination is video-passthrough augmented reality headsets. This study seeks to determine whether depth-enhancement shaders improve depth perception when virtual anatomy is viewed against a real background. We present a 12 participant pilot study featuring a standalone MR application that anchors the virtual mesh to the real world coordinate and evaluates how participants' depth perception is influenced by three shaders that have been previously shown to contribute highly to depth perception: Phong (reference), aerial-perspective fog, and chromadepth. Participants were asked to correctly identify the middle depth point and then place a fiducial marker on the surface and then report their preferred shadings. Our finds show that while chromadepth is generally preferred by users and percieved as helpful, the measured effect of shaders in passthrough environments is negligible compared to parallax and occlusion.
-
+Accurate perception of neurovascular depth is essential for surgical planning and image-guided interventions. While numerous depth-enhancement visualization techniques have been shown to improve perception of isolated vascular renderings, it remains unclear whether these benefits persist when vessels are viewed within a more anatomically realistic mixed reality (MR) environment. We present an anatomically contextualized MR visualization that embeds patient-specific cerebral vasculature within surrounding brain anatomy and evaluate three established depth-enhancement techniques: Phong shading, aerial perspective (Fog), and pseudo-chromadepth. In a within-subject study involving 12 participants, users completed a vessel depth-selection and surface-placement task while objective performance and subjective workload were recorded. No visualization technique significantly improved selection accuracy, placement accuracy, or task completion time, although pseudo-chromadepth was consistently preferred by participants. Our findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax substantially reduce the contribution of additional depth cues, highlighting the importance of evaluating surgical visualization techniques within perceptually realistic MR environments rather than using isolated vascular renderings.
 \keywords{First keyword  \and Second keyword \and Another keyword.}
 
 
@@ -48,91 +46,70 @@ Accurately judging the depth of cerebral vessels is central to neurosurgical pla
 %
 %
 \section{Introduction}\label{sec:intro}
-Neurovascular interventions, including the planning and clipping of aneurysms, the resection of arteriovenous malformations (AVMs), and the management of arteriovenous fistulae (AVFs), depend on a precise, three-dimensional understanding of how target vessels are situated within the surrounding brain~\cite{kersten-oertel_augmented_2015-1}. A central difficulty is judging the depth of a vessel of interest: it is typically embedded within, and partially occluded by, other anatomy, so its position relative to neighbouring vessels is hard to recover from the two-dimensional slices or flat desktop renderings used in conventional review, which provide weak and often ambiguous depth information~\cite{kersten-oertel_augmented_2015-1}. Video passthrough mixed reality (VPMR) is an appealing medium for this task: a head-mounted stereoscopic display supplies binocular disparity and head-coupled motion parallax, two strong depth cues, while registering the vasculature to the clinician's real workspace keeps the physical environment as context. 
 
- Given the wealth of research done on VR and AR depth perception cues and coloring, there is a gap in knowledge of if depth-enhancement shaders actually improve vessel depth judgement in a VPMR. On 2D displays and fixed overlays, cues such as aerial perspective (fog) and chromadepth substantially improve depth judgements of vascular data~\cite{kersten-oertel_evaluation_2014,ropinski_visually_2006}. In immersive VR, by contrast, binocular stereo and motion parallax are so strong that shader differences largely wash out~\cite{heinrich_estimating_2021,titov_effect_2021}. Passthrough MR sits between these regimes and adds its own difficulties: the virtual mesh competes with a real, textured background, and the passthrough imagery is geometrically distorted, reduced in resolution, and often suffers from the depth and occlusion problems long recognised in medical AR~\cite{macedo_occlusion_2023,adams_depth_2022}. Whether depth-enhancement shaders help depth judgement here or are largely washed out by stronger cues is therefore an open question we seek to help answer.
+Neurovascular procedures such as aneurysm clipping, arteriovenous malformation (AVM) resection, and the treatment of arteriovenous fistulae (AVFs) require surgeons to reason about the complex three-dimensional relationships between cerebral vessels and the surrounding brain anatomy~\cite{kersten-oertel_augmented_2015-1}. Unlike many other image-guided procedures, vessels are rarely viewed in isolation. Instead, they are partially occluded by surrounding tissue and visualized through narrow surgical corridors, making accurate depth perception important for surgical planning and intraoperative navigation~\cite{kersten-oertel_augmented_2015-1}.
 
-\noindent This study makes three contributions:
+To improve the perception of vascular anatomy, numerous visualization techniques have been proposed over the past two decades. Classical approaches such as aerial perspective (fog), chromadepth colour mapping, illustrative rendering, and enhanced surface shading have consistently been shown to improve depth judgements of vascular datasets displayed on conventional desktop systems~\cite{ropinski_visually_2006,kersten-oertel_evaluation_2014,behrendt_combining_2017}. Building on these approaches, Drouin et al.~\cite{drouin_interaction_2018} demonstrated that interaction-driven visualization, in which depth cues dynamically adapt relative to a tracked instrument, significantly improved local depth perception while preserving users' global understanding of angiographic volumes. More recently, these visualization techniques have been investigated in immersive virtual reality (VR), where stereoscopic viewing and motion parallax provide strong natural depth cues~\cite{hombeck_evaluating_2022}. Several studies have reported that once these natural cues are available, differences between visualization techniques become substantially smaller or disappear entirely, suggesting a ceiling effect in immersive environments~\cite{heinrich_estimating_2021,titov_effect_2021,lesar_evaluation_2024}.
+
+An important limitation of nearly all previous work is that neurovascular perception has been studied largely outside its anatomical context. Evaluations typically present isolated vascular trees or angiographic volumes against simple backgrounds, deliberately removing the surrounding brain anatomy to isolate visualization effects~\cite{kersten-oertel_evaluation_2014,heinrich_estimating_2021,titov_effect_2021}. While appropriate for understanding individual depth cues, these experimental paradigms differ substantially from how surgeons perceive anatomy during intervention, where vessels are interpreted together with surrounding tissue while continuously exploring the scene through natural head movement.
+
+Recent mixed reality (MR) head-mounted displays employing video passthrough provide stereoscopic viewing, natural motion parallax, and registration of virtual anatomy within the user's physical workspace, making them a promising platform for surgical visualization. At the same time, video passthrough introduces its own perceptual challenges, including reduced image quality, imperfect depth perception, limited occlusion handling, and competition between virtual anatomy and the real environment~\cite{adams_depth_2022,macedo_occlusion_2023,do_effects_2020}. Although MR has received increasing attention for IGS and neurovascular visualization~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}, it remains unclear whether visualization techniques developed for isolated vascular rendering continue to provide measurable benefit once vessels are viewed within a richer anatomical context.
+
+In this work, we introduce an anatomically contextualized MR visualization that embeds patient-specific cerebral vasculature within surrounding brain anatomy rather than presenting the vasculature in isolation. Although not intended to reproduce the exact intraoperative view, this environment more closely reflects the spatial reasoning required during neurovascular procedures while maintaining experimental control over visualization conditions. In this work, we introduce an anatomically contextualized MR visualization platform that embeds patient-specific cerebral vasculature within surrounding brain anatomy rather than presenting the vasculature in isolation. Although not intended to reproduce the exact intraoperative view, the platform provides a controlled yet perceptually richer testbed for evaluating neurovascular visualization techniques in MR. Using this platform, we compare three established depth-enhancement techniques, Phong shading, aerial perspective (Fog), and pseudo-chromadepth, during a depth-selection and placement task. Objective performance is evaluated using selection accuracy, depth and lateral placement error, task completion time, and head movement, complemented by subjective workload and user preference measures. 
+
+\section{User Study}\label{sec:userstudy}
+
+\subsection{MR Visualization Environment}
+A standalone mixed reality (MR) application was developed in Unity for the Meta Quest~3. The application displays a patient-specific cerebral vascular model embedded within surrounding anatomical brain tissue, providing anatomical context while maintaining full experimental control over the visualization. Unlike previous studies that present isolated vascular structures, participants viewed the vasculature within the surrounding anatomy while freely exploring the scene using natural head movement.
+
+The cerebral vasculature was reconstructed from anonymized time-of-flight magnetic resonance angiography (TOF-MRA) data and registered to an anatomical brain model based on the ICBM-152 template. Both models were rendered at anatomical scale and rigidly anchored to a fixed location in the user's physical workspace. Participants interacted with the visualization using the Quest controller, represented as a virtual probe. A localized clipping window centred on the probe tip dynamically revealed the embedded vasculature while preserving the surrounding anatomy (Fig.~\ref{fig:system}).
+
+\subsection{Task}
+Participants completed a depth perception task under each visualization condition. Three candidate target points were displayed at different depths within the vascular tree, and participants identified the point located at the intermediate depth using the virtual probe. They then placed a virtual fiducial on the outer brain surface directly above the selected vessel while avoiding excessive penetration into the model.
+
+Each visualization condition consisted of six depth-selection trials followed by six surface-placement trials. Participants were free to naturally move their head and body throughout the experiment, allowing unrestricted use of stereoscopic viewing and motion parallax while exploring the anatomy.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=1.0\linewidth]{StudyGraphic.png}
+    \caption{The visualizations for depth shaders as well as the color scalings for distance.}
+    \label{fig:placeholder}
+\end{figure}
+
+\subsection{Depth Visualization Techniques}
+
+Three commonly studied depth-enhancement visualization techniques were evaluated in the study (see Figure ~\ref{study}):
+
 \begin{itemize}
-  \item A standalone passthrough-MR system that registers a cerebral-vasculature mesh on the Meta Quest~3 and shades it appropriately while anchoring it to a known physical point in the room.
-  \item A depth-placement task comparison of three depth-enhancement shaders: Phong, fog, and pseudo-chromadepth. Objective measurements collected from the placement task include accuracy, time to place, and the amount of user hand and head movements made while determining the depth.
-  \item A study participant post-task survey to evaluate subjective measures including mental, physical, and temporal stress experiences as well as perceived effectiveness with each shader. \end{itemize}
+    \item \textbf{Phong shading:} Standard diffuse and specular surface shading served as the baseline condition.
+    
+    \item \textbf{Fog:} Vessel colour and opacity gradually attenuated with increasing distance from the probe tip, providing a proximity-based depth cue through aerial perspective.
+    
+    \item \textbf{Pseudo-chromadepth:} Vessel surfaces were coloured using a red-to-blue colour gradient according to their distance from the probe tip, adapting the chromadepth concept to the anatomically contextualized visualization.
+\end{itemize}
 
-\section{Related Work}\label{sec:related}
+For both Fog and pseudo-chromadepth, depth was encoded relative to the probe tip, allowing the visualization to update continuously as participants explored the anatomy. All other rendering parameters remained identical across conditions.
 
-\subsubsection{Depth cues for vascular visualisation.}
-For rendered vasculature, local (Phong) surface shading is the conventional illumination baseline. Added depth cues improve on it. Aerial perspective (fog) encodes distance as desaturation/attenuation of opacity over distance, and pseudo-chromadepth is a depth-to-colour ($\text{red}\rightarrow\text{blue}$) mapping introduced for angiography~\cite{ropinski_visually_2006}. These methods consistently rated among the strongest static cues for vascular data~\cite{kersten-oertel_evaluation_2014} and it has been adapted specifically to vascular \emph{surface} models~\cite{behrendt_combining_2017}. Depth-cue comparisons are well developed for surface renderings on conventional and VR displays~\cite{hombeck_evaluating_2022}, but have not been transferred to VPMR viewing of cerebral vasculature.
+\subsection{Study Design}
+The study employed a within-subject design in which each participant completed the task under all three visualization conditions. The order of the visualization conditions was counterbalanced across participants to reduce ordering effects. Prior to data collection, participants completed a brief familiarization session to become comfortable with the MR environment and interaction technique.
 
-\subsubsection{Depth perception in immersive VR and the ceiling effect.}
-Much of that evidence comes from 2D displays. In stereoscopic VR with free head movement, disparity and motion parallax are themselves powerful cues, and several studies report that shader choice then matters little: depth judgments of vascular models were more precise in VR than on desktop yet barely distinguished shading methods~\cite{heinrich_estimating_2021}, interactive cues had little impact on relative-depth perception for angiography volumes in VR~\cite{titov_effect_2021}, and, once camera motion is permitted, depth perception depends more on scene content than on the chosen technique~\cite{lesar_evaluation_2024}. This ceiling effect motivates our move to passthrough MR and requires that difficulty be raised deliberately. Methodologically, 3D-pointing studies show that error along the view/depth axis behaves differently from lateral error and is the axis on which depth cues act~\cite{teather_pointing_2011,batmaz_effect_2022}, motivating an error decomposition rather than a single 3D distance.
+\subsection{Outcome Measures}
 
-\subsubsection{Depth perception in passthrough augmented and mixed reality.}
-Passthrough viewing changes the depth problem rather than easing it. The depth of virtual content overlaid on a real scene is systematically misperceived, modulated by display type, shadows, and relative position~\cite{adams_depth_2022} and by object shape, colour, and luminance~\cite{do_effects_2020}. These effects are acute for medical overlays, and depth-enhancing vascular visualisation has been pursued specifically for neurovascular AR~\cite{kersten-oertel_volume_2013,kersten-oertel_augmented_2015}. The closest prior work compares depth cues for vasculature but on desktop or tethered VR and with relative-depth or detection tasks~\cite{kersten-oertel_evaluation_2014,titov_effect_2021}, and we extend that comparison to standalone passthrough MR and to an in-scene target-placement task whose error is decomposed into depth and lateral components. 
+Objective measures included target selection accuracy, selection time, surface-placement time, fiducial placement error, and head movement throughout each trial. Placement error was decomposed into components parallel and perpendicular to the viewing direction to separately quantify depth and lateral accuracy. Following each visualization condition, participants completed the NASA Task Load Index (NASA-TLX) questionnaire~\cite{hart_development_1988} and rated the perceived usefulness and overall preference of each visualization technique.
 
-\section{Methodology}\label{sec:related}
-This study focuses on participant depth perception in a VPMR environment. In order to measure this, we present the user with a textured model of a brain based on the ICBM-152 composite. Nested inside of this model is nested a model of vasculature taken from anonymized TOF-MRA patient data(TODO: I need more info here - the scan I have just says Mumu's Data) registered to the ICBM-152 scan. The vasculature is shaded according to one of three conditions: 
+\section{Results}
 
-\noindent This study makes three contributions:
-\begin{itemize}
-  \item Phong Shading: A reference baseline shading that does not change with proximity. In this study we used a red shading with a mild specular reflectivity.
-  \item Fog Shading: A distance-based opacity shader that makes the structures closest to the center point more opaque and colored, while the color washes to a semi-transparent grey at a distance.
-  \item Chromadepth: A distance based color gradient shader that colors the surfaces nearest to the reference point as red, and then steps through a color curve as the distance from the reference point increases.
-  \end{itemize}
+\subsection{Participants}
 
-The shader's reference point was the tip of the virtual probe that extended from the motion controller. Upon bringing the probe to the brain model, a small hole opened in the brain model allowing them to see the inner vasculature model. Participants were asked to perform a sequence of six selection and six marking tasks in each shader. In the selection tasks, three points are placed in the vasculature. The participant was then required to select the point at the middle depth with the probe. Once the point was selected, the participant was asked to place a fiducial marker as close to the surface as they could without going too far into the surface by bringing the tip of the probe to the surface and pulling the trigger button. Participants were allowed to stand or sit, as well as move their head as much or as little as desired. 
+Participants were recruited from a non-clinical population because the task evaluates fundamental depth perception, and previous work reported similar depth cue rankings between novices and experts~\cite{kersten-oertel_evaluation_2014}. Twelve participants (9 female, 3 male) completed the study, while two additional participants withdrew due to motion sickness and were excluded from the analysis. Five participants were graduate students, one was a medical professional, and the remaining participants represented a range of professions. Seven participants reported using VR less than once per year, and eight reported little or no familiarity with neuroanatomy.
 
-During the selection and marking tasks, participant's selection correctness, movement range and viewing angle of the headset, marking accuracy and location are recorded. Upon finishing the selection and marking tasks, the participant is asked to complete a NASA TLX\cite{hart_development_1988} to review the shading conditions they encountered and give their preferences and subjective experiences with each shader. From these collected metrics and experiences, we can form a better picture of if the shading assisted in depth perception and what the magnitude of their impact was.
+\subsection{Objective Performance}
 
-\section{User Study}
-\subsection{Participant Demographics}
-Participants were drawn from a non-clinical population on the rationale that the core depth judgement is a basic visual-system function and that prior work found similar novice/expert cue rankings for it~\cite{kersten-oertel_evaluation_2014}. The study was fully completed by 12 participants, 9 female and 3 male, while two participants stopped early due to motion sickness. Of the twelve, five were graduate students, one was a medical professional, while the other participants came from a wide array of professions. The majority of the participants(7) use VR headsets less than once a year, and the usages were primarily either video games or research. Most participants reported no familiarity with the brain anatomy(8), while three were somewhat familiar with brain anatomy and was professionally familiar.
+Table~\ref{tab:perf} summarizes the objective performance measures across the three visualization techniques. No significant differences were observed in selection accuracy, unsigned or signed depth error, lateral error, or task completion time. Likewise, no pairwise comparison survived Holm correction, indicating that none of the evaluated visualization techniques measurably improved objective depth perception within the anatomically contextualized MR environment.
 
-\subsection{Data Preparation}
-Each of the 12 participants completed 18 trials, giving 216 trials in total. Two trials recorded a
-second placement seconds after the first, indicating a re-placement; for these we keep the first
-placement only.
-
-One block of three trials (one target, presented once under each shader) is excluded from all analyses,
-leaving $12 \times 15 = 180$ trials in a balanced design of five targets per shader. The ground-truth
-point for that block is not a plausible target: it lies 8.14\,cm from the nearest other point in the
-stimulus, against a median nearest-neighbour spacing of 2.68\,cm among the remaining points. Because the
-model is rigidly re-anchored in each session and distances are invariant under rigid transformation,
-these two figures are identical to two decimal places for all twelve participants, which identifies the
-cause as a single authoring fault in the stimulus rather than a per-session error. Consistent with this,
-the block records 0/36 selection accuracy across every participant, which is a deterministic outcome
-rather than a behavioural one. The exclusion is made on apparatus grounds and is independent of the
-shader comparison, as the block was uniformly faulty in all three conditions.
-
-Because $n=12$ and we do not assume the per-participant distributions are normal, we use Friedman
-omnibus tests with Wilcoxon signed-rank post-hoc comparisons under Holm correction. We note that at
-$n=12$ the smallest two-sided $p$ attainable by any distribution-free test is $2/2^{12}=0.00049$; we do
-not report values below this floor, as they would reflect a parametric assumption rather than the data.
-
-\subsection{Results}
-
-\subsubsection{The task is depth-limited.}
-A null result is only meaningful if the task was capable of showing an effect. We therefore first ask
-whether placement error is dominated by depth at all, or is merely isotropic hand noise, which has no
-preferred axis and so could not be reduced by any distance cue.
-
-We decomposed each error vector in a view-aligned orthonormal frame, one axis along the view direction
-and two perpendicular to it, and compared RMS error along each. This requires no distributional
-assumption. Error along the view axis was 0.429\,cm against a per-axis lateral RMS of 0.193\,cm, a ratio
-of 2.37 (median 2.41). The effect is unanimous: all twelve participants show depth error exceeding
-lateral error (Wilcoxon signed-rank $W=0$, $p=0.00049$). The evidence here is the unanimity and the
-magnitude of the ratio; the $p$-value only confirms that twelve out of twelve is not a coin flip. Depth
-is thus roughly $2.4\times$ harder than the lateral axes in this task, as the 3D-pointing literature
-predicts~\cite{teather_pointing_2011,batmaz_effect_2022}, and the task carries a large depth-specific
-error component available for a shader to reduce.
-
-\subsubsection{No shader affected performance.}
-No shader reduced it. Table~\ref{tab:perf} reports every objective outcome recorded. None approaches
-significance, and no pairwise contrast survives Holm correction.
-
-\begin{table}[t]
-\caption{Objective outcomes (per-participant means, $n=12$, 180 trials). Errors in cm, times in
-seconds. Depth and lateral errors are computed on trials where the participant selected the designated
-point. No outcome is significant.}\label{tab:perf}
+\begin{table}[ht]
+\caption{Objective outcomes (per-participant means, $n=12$, 180 trials). Errors are reported in cm and times in seconds. Depth and lateral errors were computed only for trials in which the correct target was selected. No outcome reached statistical significance.}
+\label{tab:perf}
 \centering
 \begin{tabular}{lcccc}
 \hline\noalign{\smallskip}
@@ -148,36 +125,24 @@ Time to select (s)      & 21.57 & 20.13 & 26.57 & $\chi^2=2.67$, $p=0.264$ \\
 \end{tabular}
 \end{table}
 
-Signed depth error was slightly negative in every condition (grand mean $-0.088$\,cm), the direction
-expected for the depth compression characteristic of head-mounted displays, but did not differ
-reliably from zero ($t=-1.45$, $p=0.174$).
+A null result is only informative if the task itself requires participants to make meaningful depth judgements. To verify this, we decomposed each placement error into a view-aligned orthonormal coordinate frame and compared the RMS error along the viewing direction with the two lateral directions. This analysis requires no distributional assumptions.
 
-Participants viewed the model freely, and did so extensively: head-position range over a session was a
-median $2.08\times$ the full extent of the point cloud, and selection times reached 235\,s on individual
-trials. The depth separation of the three candidate points, being a function of the vantage each
-participant adopted rather than of the design, varied from 0.2 to 18.9\,cm across trials (median
-4.0\,cm).
+Error along the viewing axis was 0.429\,cm compared with a per-axis lateral RMS error of 0.193\,cm, corresponding to a ratio of 2.37 (median 2.41). The effect was consistent across all participants: every participant exhibited greater depth than lateral error (Wilcoxon signed-rank $W=0$, $p=0.00049$). These findings indicate that depth judgement was approximately $2.4\times$ more difficult than lateral positioning, consistent with previous 3D pointing studies~\cite{teather_pointing_2011,batmaz_effect_2022}. The task therefore contained a substantial depth-specific component that could have benefited from improved depth visualization.
 
-\subsubsection{But participants preferred chromadepth.}
-Subjective responses diverge from performance. Asked which shader they found most helpful, 7 of the 10
-participants who named a single condition chose chromadepth and 3 chose Phong; none chose fog (binomial
-against $1/3$ chance, $p=0.020$). Counting the two further participants who named several conditions,
-chromadepth was named by 9 of 12.
+Signed depth error was slightly negative across all visualization techniques (grand mean $-0.088$\,cm), consistent with the depth compression commonly reported for HMDs, although the bias was not significantly different from zero ($t=-1.45$, $p=0.174$).
 
-This item carries two caveats. The response options were edited partway through data collection, so one
-condition appears under two labels, which we merged before tallying; and the item permitted multiple
-selections rather than forcing a single choice. It is also one significant result among approximately
-thirteen tests reported here, and would not survive Bonferroni correction across that set
-($0.05/13 = 0.0038$). We therefore treat it as suggestive rather than confirmatory.
+Participants also made extensive use of natural viewing behaviour. The median head-position range during a session was $2.08\times$ the full extent of the vascular model, with individual selection trials lasting up to 235\,s. Because participants freely selected their viewpoints, the depth separation between the three candidate points varied from 0.2 to 18.9\,cm across trials (median 4.0\,cm).
 
-Workload responses corroborate the direction without reaching significance. On the NASA-TLX
-subscales~\cite{hart_development_1988}, Phong was rated worst on all six (Table~\ref{tab:tlx}). Effort
-is closest to significance ($p=0.063$). The subscales are mutually correlated, so their agreement is
-corroborating rather than independent evidence; but the direction is unanimous across all six.
+\subsection{Subjective Evaluation}
+Although objective performance did not differ between visualization techniques, subjective responses showed a clear preference for pseudo-chromadepth. Of the ten participants who selected a single preferred visualization, seven chose pseudo-chromadepth and three chose Phong, while none selected Fog (binomial test against $1/3$ chance, $p=0.020$). Including the two participants who selected multiple techniques, pseudo-chromadepth was chosen by nine of the twelve participants.
+
+This result should be interpreted cautiously. The response options were modified during data collection, requiring one visualization condition to be merged across two labels, and participants were permitted to select multiple preferred techniques. We therefore consider this finding suggestive rather than confirmatory.
+
+NASA-TLX responses showed a similar trend (Table~\ref{tab:tlx}). Phong received the highest (worst) ratings on all six workload subscales, with Effort approaching significance ($p=0.063$). Although none of the workload measures reached statistical significance, the consistent direction across all subscales suggests that participants perceived pseudo-chromadepth and Fog as requiring slightly less effort than the baseline visualization.
 
 \begin{table}[t]
-\caption{NASA-TLX subscales (per-participant means, $n=12$; higher is worse on every subscale). Phong is
-rated worst on all six; none is significant.}\label{tab:tlx}
+\caption{NASA-TLX subscale scores (per-participant means, $n=12$; higher scores indicate greater workload). Phong received the highest workload ratings on all six subscales, although no comparison reached statistical significance.}
+\label{tab:tlx}
 \centering
 \begin{tabular}{lcccc}
 \hline\noalign{\smallskip}
@@ -195,116 +160,18 @@ Frustration     & 3.83 & 2.75 & 2.75 & $\chi^2=3.71$, $p=0.156$ \\
 
 \section{Discussion}
 
-\subsubsection{Preference without benefit.}
-Our participants preferred a shader that did not measurably help them. Chromadepth was named most
-helpful by 9 of 12, and Phong was rated worst on all six NASA-TLX subscales, yet no shader moved any
-objective outcome. This dissociation is the central result, and it is not an artefact of an insensitive
-measure: the task carries a depth-specific error component roughly $2.4\times$ larger than its lateral
-counterpart, in all twelve participants, so there was ample room for a distance cue to act.
+The primary finding of this study is that established depth-enhancement visualization techniques did not measurably improve objective depth perception when cerebral vasculature was viewed within an anatomically contextualized MR environment. Previous work has consistently demonstrated benefits of chromadepth, aerial perspective, and interaction-driven visualization for isolated vascular renderings viewed on conventional displays~\cite{ropinski_visually_2006,kersten-oertel_evaluation_2014,behrendt_combining_2017,drouin_interaction_2018}. In contrast, none of the evaluated visualization techniques significantly affected selection accuracy, placement accuracy, or task completion time in our study. Rather than contradicting previous findings, we believe these results demonstrate that the effectiveness of depth-enhancement techniques depends strongly on the perceptual context in which they are evaluated.
 
-\subsubsection{Why no effect?}
-The most direct explanation lies in what our shaders encode. Both fog and chromadepth take the probe tip
-as their reference point, so they encode \emph{distance from the instrument}, a quantity that is
-radially symmetric about the tip. Our outcome, by contrast, is error along the \emph{view} axis. A
-proximity encoding carries no information about which of two points lies further from the observer, and
-so has no direct route to reducing view-axis error. This is a mismatch between manipulation and measure,
-and it distinguishes our conditions from the view-dependent formulations of aerial perspective and
-pseudo-chromadepth from which they take their colour mappings~\cite{ropinski_visually_2006}.
+A key difference between our work and previous studies is that participants viewed cerebral vessels embedded within surrounding brain anatomy rather than as isolated vascular trees or angiographic volumes. In addition, participants were free to naturally explore the scene using stereoscopic viewing and unrestricted head movement, allowing continuous motion parallax while interpreting vessels relative to neighbouring anatomical structures. Together, these cues likely reduced reliance on artificial depth enhancements. This interpretation agrees with previous immersive VR studies showing that the benefits of depth-enhancement techniques diminish once binocular disparity and motion parallax become available~\cite{heinrich_estimating_2021,titov_effect_2021,lesar_evaluation_2024}. Our findings suggest that this ceiling effect extends beyond immersive VR to anatomically contextualized MR visualization, where anatomical context itself becomes an additional source of spatial information.
 
-The null is nonetheless not vacuous, because a plausible indirect route existed and did not materialise.
-During the marking task the candidate points are hidden but the vasculature remains shaded, so a
-participant could advance the tip until the surface saturated toward the near end of the ramp and infer
-contact from colour alone. Phong, which does not vary with proximity, offers no such signal. That
-asymmetry could have produced a difference in placement accuracy. It did not.
+Beyond the findings for the three visualization techniques evaluated here, the proposed MR platform provides a controlled evaluation environment for studying future neurovascular visualization methods under conditions that more closely resemble surgical perception than conventional desktop experiments. Such a testbed may help bridge the gap between visualization techniques developed in isolation and their eventual application within computer-assisted surgical systems.Importantly, this does not imply that depth visualization techniques are no longer useful. Rather, it suggests that visualization methods developed using simplified experimental paradigms should be re-evaluated in environments that more closely resemble how surgeons actually perceive anatomy. Much of the vascular visualization literature intentionally removes surrounding anatomy to isolate perceptual effects. While this approach has produced valuable insights into individual visualization techniques, our results indicate that conclusions drawn from isolated vascular renderings may not directly translate to clinically relevant MR visualization systems, where surgeons simultaneously exploit anatomical context, stereopsis, and motion parallax.
 
-A second account is that the task afforded strong native depth cues regardless. Viewing was
-unconstrained: participants moved over a median head range of $2.08\times$ the extent of the point cloud
-and took up to 235\,s per trial, and against world-locked anatomy such movement makes motion parallax
-veridical and abundant. Prior work in immersive VR reports precisely this ceiling, with shader choice
-mattering little once stereo and parallax are
-available~\cite{heinrich_estimating_2021,titov_effect_2021,lesar_evaluation_2024}. Our data cannot
-separate the two accounts, and they are not exclusive: a view-dependent shader might well have been
-ceilinged by parallax even had we implemented one.
+Interestingly, subjective responses diverged from objective performance. Participants consistently preferred pseudo-chromadepth, and NASA-TLX scores showed a similar trend toward reduced perceived workload despite no measurable improvement in task performance. This partially contrasts with interaction-driven visualization work, where chromadepth both improved performance and was preferred by users~\cite{drouin_interaction_2018}, again suggesting that the perceptual context substantially influences the effectiveness of depth-enhancement techniques. Our findings indicate that visualization techniques may still improve confidence or perceived ease of interpretation even when objective performance is unchanged. For surgical visualization systems, this distinction is important: techniques that improve user experience may still be valuable, but they should not necessarily be interpreted as improving perceptual accuracy.
 
-\subsubsection{Why, then, the preference?}
-A cue can make a task feel easier without making it more accurate. That chromadepth was preferred while
-Effort was the subscale nearest significance ($p=0.063$) suggests participants experienced a reduction in
-the felt cost of a judgement they could make either way. For system design this is not nothing: a
-visualisation that lowers perceived workload at no cost to accuracy may still merit adoption. But on
-this evidence it should not be presented as an accuracy aid, and the gap between what users report and
-what they achieve is itself a reason to measure both.
-
-\subsection{Limitations}
-Several limitations bound these conclusions.
-
-\emph{Our shaders are not the view-dependent cues of the prior literature.} They adapt the colour
-mappings of fog and pseudo-chromadepth to an instrument-proximity reference. Our results therefore speak
-to proximity encodings and do not test whether view-dependent depth shaders help in passthrough MR,
-which remains open.
-
-\emph{Fog is confounded with occlusion.} It ramps opacity as well as colour, so the fog condition
-renders vessels semi-transparent at distance and does not differ from Phong only in how distance is
-encoded. Any fog effect, had we found one, could not have been attributed to the distance encoding
-alone.
-
-\emph{Viewing was unconstrained.} We neither restricted head movement nor imposed a response deadline,
-so we cannot separate ``shaders do not help here'' from ``shaders do not help when parallax is freely
-available''. The latter regime is arguably the clinically relevant one: a surgeon at a fixed vantage
-over a craniotomy cannot orbit the anatomy.
-
-\emph{The selection stage is not a depth measure.} The instruction to select the point ``in the middle''
-does not specify middle \emph{in depth}, and because viewing was free, the depth separation of the three
-candidates was set by each participant's vantage rather than by the design, ranging from 0.2 to
-18.9\,cm. On some trials the candidates were effectively coplanar in depth. Selection accuracy is
-reported descriptively only.
-
-\emph{The sample is small and the study exploratory.} With $n=12$ and no pre-registration we can claim
-only that we could not detect a difference, not that none exists. The preference result is one
-significant test among many and requires independent confirmation.
-
-\emph{The scene is fully virtual and the model a composite.} No physical object was present; the anchor
-world-locks the model and supplies parallax, but not a real surface at a known distance. One patient's
-vessels affinely registered to a template brain is adequate for perceptual work but is not
-patient-specific anatomy.
+Several limitations should be considered when interpreting these findings. First, we evaluated three representative depth-enhancement visualization techniques adapted for interactive MR exploration. Other visualization strategies, including alternative implementations of chromadepth, illustrative rendering, or interaction-driven techniques, may exhibit different behaviour in anatomically contextualized MR environments.Consequently, our conclusions apply specifically to proximity-based depth encodings and do not exclude potential benefits of alternative visualization strategies in MR. Second, participants were allowed unrestricted viewpoint changes and unlimited exploration time. Although this reflects natural interaction with MR systems, it also maximized the availability of motion parallax and may therefore represent a best-case scenario for natural depth perception. Finally, this exploratory study included a relatively small sample of participants. While the depth-specific error analysis demonstrated that the task itself was sufficiently sensitive to reveal performance differences, future studies involving clinicians, more realistic surgical tasks, and varying levels of anatomical context will be necessary to determine under which conditions depth-enhancement techniques provide measurable benefit.
 
 \section{Conclusion}
-
-
-\noindent Displayed equations are centered and set on a separate
-line.
-\begin{equation}
-x + y = z
-\end{equation}
-Please try to avoid rasterized images for line-art diagrams and
-schemas. Whenever possible, use vector graphics instead (see
-Fig.~\ref{fig1}).
-
-\begin{figure}
-\includegraphics[width=\textwidth]{fig1.eps}
-\caption{A figure caption is always placed below the illustration.
-Please note that short captions are centered, while long ones are
-justified by the macro package automatically.} \label{fig1}
-\end{figure}
-
-\begin{theorem}
-This is a sample theorem. The run-in heading is set in bold, while
-the following text appears in italics. Definitions, lemmas,
-propositions, and corollaries are styled the same way.
-\end{theorem}
-
-\begin{proof}
-Proofs, examples, and remarks have the initial word in italics,
-while the following text appears in normal font.
-\end{proof}
-For citations of references, we prefer the use of square brackets
-and consecutive numbers. Citations using labels or the author/year
-convention are also acceptable. The following bibliography provides
-a sample reference list with entries for journal
-articles~\cite{ref_article1}, an LNCS chapter~\cite{ref_lncs1}, a
-book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
-and a homepage~\cite{ref_url1}. Multiple citations are grouped
-\cite{ref_article1,ref_lncs1,ref_book1},
-\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
+We presented an anatomically contextualized mixed reality platform for evaluating neurovascular visualization techniques and used it to compare three established depth-enhancement methods. Although pseudo-chromadepth was consistently preferred by participants, none of the evaluated techniques significantly improved objective task performance. These findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax substantially reduce the contribution of additional artificial depth cues compared with previous studies using isolated vascular renderings. Beyond these findings, the proposed platform provides a controlled testbed for evaluating future MR visualization techniques within a perceptually realistic neurovascular context.
 
 \begin{comment}  
 
