@@ -21,23 +21,21 @@
 %
 \title{An Anatomically Contextualized Mixed Reality Testbed for Evaluating Neurovascular Depth Visualization}
 %
-\begin{comment}  %% Removed for anonymized MICCAI 2025 submission
-\author{First Author\inst{1}\orcidID{0000-1111-2222-3333} \and
-Second Author\inst{2,3}\orcidID{1111-2222-3333-4444} \and
-Third Author\inst{3}\orcidID{2222--3333-4444-5555}}
+%% Camera-ready author block. Optional TODO: add \orcidID{...} per author if desired.
+\author{Zo\'e Jones\inst{1} \and
+Simon Drouin\inst{2} \and
+Marta Kersten-Oertel\inst{1}}
 %
-\end{comment}
-
-\author{Anon Authors}  %% Added for anonymized MICCAI 2025 submission
-\authorrunning{Anonymized Author et al.}
-\institute{Anonymized Affiliations \\
-    \email{email@anonymized.com}}
+\authorrunning{Z. Jones et al.}
+\institute{Concordia University, Montr\'eal, Canada \\
+    \email{ZoeConcordia@pm.me} \and
+    \'Ecole de technologie sup\'erieure, Montr\'eal, Canada}
 
     
 \maketitle              % typeset the header of the contribution
 %
 \begin{abstract}
-Accurate perception of neurovascular depth is essential for surgical planning and image-guided interventions. While numerous depth-enhancement visualization techniques have been shown to improve perception of isolated vascular renderings, it remains unclear whether these benefits persist when vessels are viewed within a more anatomically realistic mixed reality (MR) environment. We present an anatomically contextualized MR visualization that embeds patient-specific cerebral vasculature within surrounding brain anatomy and evaluate three established depth-enhancement techniques: Phong shading, aerial perspective (Fog), and pseudo-chromadepth. In a within-subject study involving 12 participants, users completed a vessel depth-selection and surface-placement task while objective performance and subjective workload were recorded. No visualization technique significantly improved selection accuracy, placement accuracy, or task completion time, although pseudo-chromadepth was consistently preferred by participants. Our findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax substantially reduce the contribution of additional depth cues, highlighting the importance of evaluating surgical visualization techniques within perceptually realistic MR environments rather than using isolated vascular renderings.
+Accurate perception of neurovascular depth is essential for surgical planning and image-guided interventions. While numerous depth-enhancement visualization techniques have been shown to improve perception of isolated vascular renderings, it remains unclear whether these benefits persist when vessels are viewed within a more anatomically realistic mixed reality (MR) environment. We present an anatomically contextualized MR visualization that embeds patient-specific cerebral vasculature within surrounding brain anatomy and evaluate three established depth-enhancement techniques: Phong shading, aerial perspective (Fog), and pseudo-chromadepth. In a within-subject study involving 12 participants, users completed a vessel depth-selection and surface-placement task while objective performance and subjective workload were recorded. No visualization technique significantly improved selection accuracy, placement accuracy, or task completion time, although pseudo-chromadepth was consistently preferred by participants. Our findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax may together reduce the contribution of additional depth cues. Because these factors co-occur in every condition, our exploratory design cannot isolate their individual roles, but the results highlight the importance of evaluating surgical visualization techniques within perceptually realistic MR environments rather than using isolated vascular renderings.
 \keywords{Mixed Reality \and Medical Imaging \and Computer Graphics}
 
 
@@ -55,19 +53,19 @@ An important limitation of nearly all previous work is that neurovascular percep
 
 Recent mixed reality (MR) head-mounted displays employing video passthrough provide stereoscopic viewing, natural motion parallax, and registration of virtual anatomy within the user's physical workspace, making them a promising platform for surgical visualization. At the same time, video passthrough introduces its own perceptual challenges, including reduced image quality, imperfect depth perception, limited occlusion handling, and competition between virtual anatomy and the real environment~\cite{adams_depth_2022,macedo_occlusion_2023,do_effects_2020}. Although MR has received increasing attention for IGS and neurovascular visualization~\cite{preim_survey_2016,kersten-oertel_augmented_2015}, it remains unclear whether visualization techniques developed for isolated vascular rendering continue to provide measurable benefit once vessels are viewed within a richer anatomical context.
 
-In this work, we introduce an anatomically contextualized MR visualization that embeds patient-specific cerebral vasculature within surrounding brain anatomy rather than presenting the vasculature in isolation. Although not intended to reproduce the exact intraoperative view, this environment more closely reflects the spatial reasoning required during neurovascular procedures while maintaining experimental control over visualization conditions. In this work, we introduce an anatomically contextualized MR visualization platform that embeds patient-specific cerebral vasculature within surrounding brain anatomy rather than presenting the vasculature in isolation. Although not intended to reproduce the exact intraoperative view, the platform provides a controlled yet perceptually richer testbed for evaluating neurovascular visualization techniques in MR. Using this platform, we compare three established depth-enhancement techniques, Phong shading, aerial perspective (Fog), and pseudo-chromadepth, during a depth-selection and placement task. Objective performance is evaluated using selection accuracy, depth and lateral placement error, task completion time, and head movement, complemented by subjective workload and user preference measures. 
+In this work, we introduce an anatomically contextualized MR visualization platform that embeds patient-specific cerebral vasculature within surrounding brain anatomy rather than presenting the vasculature in isolation. Although not intended to reproduce the exact intraoperative view, the platform more closely reflects the spatial reasoning required during neurovascular procedures while maintaining experimental control over visualization conditions, providing a controlled yet perceptually richer testbed for evaluating neurovascular visualization techniques in MR. Using this platform, we compare three established depth-enhancement techniques, Phong shading, aerial perspective (Fog), and pseudo-chromadepth, during a depth-selection and placement task. Objective performance is evaluated using selection accuracy, depth and lateral placement error, task completion time, and head movement, complemented by subjective workload and user preference measures. 
 
 \section{User Study}\label{sec:userstudy}
 
 \subsection{MR Visualization Environment}
 A standalone mixed reality (MR) application was developed in Unity for the Meta Quest~3. The application displays a patient-specific cerebral vascular model embedded within surrounding anatomical brain tissue, providing anatomical context while maintaining full experimental control over the visualization. Unlike previous studies that present isolated vascular structures, participants viewed the vasculature within the surrounding anatomy while freely exploring the scene using natural head movement.
 
-The cerebral vasculature was reconstructed from anonymized time-of-flight magnetic resonance angiography (TOF-MRA) data and registered to an anatomical brain model based on the ICBM-152 template. Both models were rendered at anatomical scale and rigidly anchored to a fixed location in the user's physical workspace. Participants interacted with the visualization using the Quest controller, represented as a virtual probe. A localized clipping window centred on the probe tip dynamically revealed the embedded vasculature while preserving the surrounding anatomy (Fig.~\ref{fig:system}).
+The cerebral vasculature was reconstructed from anonymized time-of-flight magnetic resonance angiography (TOF-MRA) data and rigidly registered to an anatomical brain model based on the ICBM-152 template. Because the vasculature is patient-specific while the surrounding brain is a population template, the environment provides a simplified, template-based anatomical context rather than a fully patient-specific or intraoperative representation. Both models were rendered at anatomical scale and rigidly anchored to a fixed location in the user's physical workspace. Participants interacted with the visualization using the Quest controller, represented as a virtual probe. A localized clipping window centred on the probe tip dynamically revealed the embedded vasculature while preserving the surrounding anatomy (Fig.~\ref{fig:system}).
 
 \subsection{Task}
 Participants completed a depth perception task under each visualization condition. Three candidate target points were displayed at different depths within the vascular tree, and participants identified the point located at the intermediate depth using the virtual probe. They then placed a virtual fiducial on the outer brain surface directly above the selected vessel while avoiding excessive penetration into the model.
 
-Each visualization condition consisted of six depth-selection trials followed by six surface-placement trials. Participants were free to naturally move their head and body throughout the experiment, allowing unrestricted use of stereoscopic viewing and motion parallax while exploring the anatomy.
+Each visualization condition consisted of five depth-selection trials followed by five surface-placement trials. A sixth trial set was administered but excluded from analysis, yielding 180 trials per task across the 12 participants and three conditions ($12 \times 3 \times 5$). Participants were free to naturally move their head and body throughout the experiment, allowing unrestricted use of stereoscopic viewing and motion parallax while exploring the anatomy.
 
 \begin{figure}
     \centering
@@ -78,7 +76,7 @@ Each visualization condition consisted of six depth-selection trials followed by
 
 \subsection{Depth Visualization Techniques}
 
-Three commonly studied depth-enhancement visualization techniques were evaluated in the study (see Figure ~\ref{study}):
+Three commonly studied depth-enhancement visualization techniques were evaluated in the study (see Fig.~\ref{fig:system}):
 
 \begin{itemize}
     \item \textbf{Phong shading:} Standard diffuse and specular surface shading served as the baseline condition.
@@ -95,7 +93,7 @@ The study employed a within-subject design in which each participant completed t
 
 \subsection{Outcome Measures}
 
-Objective measures included target selection accuracy, selection time, surface-placement time, fiducial placement error, and head movement throughout each trial. Placement error was decomposed into components parallel and perpendicular to the viewing direction to separately quantify depth and lateral accuracy. Following each visualization condition, participants completed the NASA Task Load Index (NASA-TLX) questionnaire~\cite{hart_development_1988} and rated the perceived usefulness and overall preference of each visualization technique.
+Objective measures included target selection accuracy, selection time, surface-placement time, fiducial placement error, and head movement throughout each trial. Placement error was decomposed into components parallel and perpendicular to the viewing direction to separately quantify depth and lateral accuracy. Following each visualization condition, participants completed the NASA Task Load Index (NASA-TLX) questionnaire~\cite{hart_development_1988} and rated the perceived usefulness and overall preference of each visualization technique. Each NASA-TLX subscale was rated on a raw, unweighted $7$-point ordinal scale; we report the per-subscale raw ratings rather than the weighted $0$--$100$ score of the original instrument, as no pairwise weighting procedure was administered.
 
 \section{Results}
 
@@ -131,7 +129,10 @@ Error along the viewing axis was 0.429\,cm compared with a per-axis lateral RMS 
 
 Signed depth error was slightly negative across all visualization techniques (grand mean $-0.088$\,cm), consistent with the depth compression commonly reported for HMDs, although the bias was not significantly different from zero ($t=-1.45$, $p=0.174$).
 
-Participants also made extensive use of natural viewing behaviour. The median head-position range during a session was $2.08\times$ the full extent of the vascular model, with individual selection trials lasting up to 235\,s. Because participants freely selected their viewpoints, the depth separation between the three candidate points varied from 0.2 to 18.9\,cm across trials (median 4.0\,cm).
+\subsection{Head Movement and Viewing Behaviour}
+
+Because the availability of motion parallax depends on how much participants actually moved, we logged the head pose throughout every trial. Participants made extensive use of natural viewing behaviour rather than adopting a single fixed viewpoint: the median head-position range during a session was $2.08\times$ the full spatial extent of the vascular model, meaning that participants translated their viewpoint across a volume roughly twice the size of the anatomy under inspection. This exploration was sustained over time, with individual selection trials lasting up to 235\,s while participants repositioned to disambiguate depth. Because participants freely selected and continuously changed their viewpoints, the effective depth separation between the three candidate points varied from 0.2 to 18.9\,cm across trials (median 4.0\,cm).
+The magnitude of this movement indicates that participants continuously exploited stereoscopic viewing and motion parallax while interpreting the vasculature. This behavioural evidence supports our interpretation that strong natural depth cues were available in every condition, offering a plausible mechanism for why the additional artificial depth cues conferred no measurable objective benefit.
 
 Time usage by the participants was fairly uniform, with participants taking more time to select the correct point ($sec=22.75$) than to place the fiducial marker ($sec=7.84$). This indicates that participants often struggled to understand the correct depth initially, once the vasculature's depth was apparent to them then the placing of the fiducial marker was a straightforward task.
 
@@ -168,33 +169,27 @@ Beyond the findings for the three visualization techniques evaluated here, the p
 
 Interestingly, subjective responses diverged from objective performance. Participants consistently preferred pseudo-chromadepth, and NASA-TLX scores showed a similar trend toward reduced perceived workload despite no measurable improvement in task performance. This partially contrasts with interaction-driven visualization work, where chromadepth both improved performance and was preferred by users~\cite{drouin_interaction_2018}, again suggesting that the perceptual context substantially influences the effectiveness of depth-enhancement techniques. Our findings indicate that visualization techniques may still improve confidence or perceived ease of interpretation even when objective performance is unchanged. For surgical visualization systems, this distinction is important: techniques that improve user experience may still be valuable, but they should not necessarily be interpreted as improving perceptual accuracy.
 
-Several limitations should be considered when interpreting these findings. First, we evaluated three representative depth-enhancement visualization techniques adapted for interactive MR exploration. Other visualization strategies, including alternative implementations of chromadepth, illustrative rendering, or interaction-driven techniques, may exhibit different behaviour in anatomically contextualized MR environments.Consequently, our conclusions apply specifically to proximity-based depth encodings and do not exclude potential benefits of alternative visualization strategies in MR. Second, participants were allowed unrestricted viewpoint changes and unlimited exploration time. Although this reflects natural interaction with MR systems, it also maximized the availability of motion parallax and may therefore represent a best-case scenario for natural depth perception. Finally, this exploratory study included a relatively small sample of participants. While the depth-specific error analysis demonstrated that the task itself was sufficiently sensitive to reveal performance differences, future studies involving clinicians, more realistic surgical tasks, and varying levels of anatomical context will be necessary to determine under which conditions depth-enhancement techniques provide measurable benefit.
+Several limitations should be considered when interpreting these findings. First, we evaluated three representative depth-enhancement visualization techniques adapted for interactive MR exploration. Other visualization strategies, including alternative implementations of chromadepth, illustrative rendering, or interaction-driven techniques, may exhibit different behaviour in anatomically contextualized MR environments.Consequently, our conclusions apply specifically to proximity-based depth encodings and do not exclude potential benefits of alternative visualization strategies in MR. Second, participants were allowed unrestricted viewpoint changes and unlimited exploration time. Although this reflects natural interaction with MR systems, it also maximized the availability of motion parallax and may therefore represent a best-case scenario for natural depth perception. Third, because anatomical context, stereoscopic viewing, and motion parallax were present simultaneously in every condition, our design cannot attribute the absence of a visualization effect to any individual factor. Isolating their contributions would require a factorial design that varies anatomical context and viewing mode independently; we therefore present the roles of context, stereopsis, and parallax as plausible explanations rather than demonstrated causes. Finally, this exploratory study included a relatively small sample of participants, and we did not conduct an a priori power or equivalence analysis. The non-significant results should accordingly be read as an absence of a detectable difference in this sample rather than as evidence that the techniques are equivalent. While the depth-specific error analysis demonstrated that the task itself was sufficiently sensitive to reveal performance differences, future studies involving clinicians, more realistic surgical tasks, and varying levels of anatomical context will be necessary to determine under which conditions depth-enhancement techniques provide measurable benefit.
 
 \section{Conclusion}
-We presented an anatomically contextualized mixed reality platform for evaluating neurovascular visualization techniques and used it to compare three established depth-enhancement methods. Although pseudo-chromadepth was consistently preferred by participants, none of the evaluated techniques significantly improved objective task performance. These findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax substantially reduce the contribution of additional artificial depth cues compared with previous studies using isolated vascular renderings. Beyond these findings, the proposed platform provides a controlled testbed for evaluating future MR visualization techniques within a perceptually realistic neurovascular context.
+We presented an anatomically contextualized mixed reality platform for evaluating neurovascular visualization techniques and used it to compare three established depth-enhancement methods. Although pseudo-chromadepth was consistently preferred by participants, none of the evaluated techniques significantly improved objective task performance. These findings suggest that anatomical context, stereoscopic viewing, and natural motion parallax may reduce the contribution of additional artificial depth cues compared with previous studies using isolated vascular renderings, though our exploratory design cannot separate their individual contributions. Beyond these findings, the proposed platform provides a controlled testbed for evaluating future MR visualization techniques within a perceptually realistic neurovascular context.
 
-\begin{comment}  
+\subsubsection*{Ethics and consent.}
+The questionnaire and methodology for this study were approved by the
+Concordia University Human Research and Ethics Committee under Protocol
+Number 30016074. All participants provided written informed consent prior to
+participation, and all patient identifiers were removed from the imaging data
+prior to use.
 
-%% removed to make this anonymous :)
-    
 \begin{credits}
-\subsubsection{\ackname} A bold run-in heading in small font size at the end of the paper is
-used for general acknowledgments, for example: This study was funded
-by X (grant number Y).
+\subsubsection{\ackname}
+This work was supported by the Fonds Qu\'eb\'ecois de la Recherche sur la
+Nature et les Technologies, Grant Number VE0236.
 
 \subsubsection{\discintname}
-It is now necessary to declare any competing interests or to specifically
-state that the authors have no competing interests. Please place the
-statement with a bold run-in heading in small font size beneath the
-(optional) acknowledgments\footnote{If EquinOCS, our proceedings submission
-system, is used, then the disclaimer can be provided directly in the system.},
-for example: The authors have no competing interests to declare that are
-relevant to the content of this article. Or: Author A has received research
-grants from Company W. Author B has received a speaker honorarium from
-Company X and owns stock in Company Y. Author C is a member of committee Z.
+The authors have no competing interests to declare that are relevant to the
+content of this article.
 \end{credits}
-
-\end{comment}
 %
 % ---- Bibliography ----
 \bibliographystyle{splncs04}
